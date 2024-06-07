@@ -140,18 +140,51 @@ Currently, on the testnet, the DA cannot be changed later, but they said they wi
 
 ```console
 cd $HOME
-wget https://github.com/airchains-network/tracks/releases/download/v0.0.2/eigenlayer
-mkdir -p $HOME/go/bin
-chmod +x $HOME/eigenlayer
-mv $HOME/eigenlayer $HOME/go/bin
+git clone https://github.com/availproject/availup.git
+cd availup
+/bin/bash availup.sh --network "turing" --app_id 36
+# Close with Ctrl+c, press Enter
 ```
+![image](https://github.com/ahmkah/Airchains/assets/99053148/bbff7a2e-d2a9-42aa-ac23-563e01e37791)
+
+> We are writing the service file. If you are using the User, adjust the `root` part accordingly.
 
 ```console
-# `CUZDANADI` değiştirin ve çıktıda size verilen ECDSA Private Keyi saklayın. 
-# Ctrl+c ile kapatın enterlayın ve verilen diğer `public hex` kenara not edin lazım olacak.
-# Verilen 0x evm adresine her ihtimale karşı 0.5 eth atın holesky ağında.
+# You can copy and paste the entire block with just one command
+sudo tee /etc/systemd/system/availd.service > /dev/null <<'EOF'
+[Unit]
+Description=Avail Light Node
+After=network.target
+StartLimitIntervalSec=0
 
-eigenlayer operator keys create --key-type ecdsa CUZDANADI
+[Service]
+User=root
+Type=simple
+Restart=always
+RestartSec=120
+ExecStart=/root/.avail/turing/bin/avail-light --network turing --app-id 36 
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+> We update and start the services.
+
+```
+systemctl daemon-reload 
+sudo systemctl enable availd
+sudo systemctl start availd
+sudo journalctl -u availd -f --no-hostname -o cat
+```
+![image](https://github.com/ahmkah/Airchains/assets/99053148/364e88b4-d8eb-4e16-a5f9-abcf7c3c8482)
+
+
+```console
+# Inside the file `~/.avail/identity/identity.toml`, you will find the Mnemonics of your Avail wallet. Copy and store these words. 
+# Close with Ctrl+c, press Enter, and make a note of the other `Avail-Mnemonics` given as they will be needed.
+# Add the copied Mnemonics to Polkadot.js or Talisman wallet, get your wallet address on the Avail Turing network and receive tokens from the faucet.
+
+ Avail-Faucet (https://faucet.avail.tools/)
 ```
 
 > Şimdi track ve station kısmına geçiyoruz. 
