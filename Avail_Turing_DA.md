@@ -1,53 +1,56 @@
-<h1 align="center">Airchains</h1>
+<h1 align="center">Airchain Create an EVM ZK Rollup for Avail DA</h1>
 
-> UYARI : Her hangi bir hatada puanlarınızın kaybolmaması için kurulum aşamalarında verilen keyleri ve priv keyleri saklayın.
+> WARNING: To ensure that your points are not lost in case of any errors, store the keys and private keys provided during the installation steps.
 
-> Standart güncelleme ve gereksinimleri kuruyoruz.
+> We are installing standard updates and requirements.
 
 #
 
-<h1 align="center">Donanım</h1>
+<h1 align="center">Hardware</h1>
 
 ```
 Minimum: 2 vCPU 4 RAM
-Önerilen: 4vCPU 8 RAM
+Recommended: 4vCPU 8 RAM
 ```
-<h1 align="center">Kurulum</h1>
+<h1 align="center">Intallation</h1>
 
 ```console
-# güncelleme
+# Updating
 apt update && apt upgrade -y
 sudo apt install -y curl git jq lz4 build-essential cmake perl automake autoconf libtool wget libssl-dev
 
-# Go kurulumu
-sudo rm -rf /usr/local/go
-curl -L https://go.dev/dl/go1.22.3.linux-amd64.tar.gz | sudo tar -xzf - -C /usr/local
+# Installing Go 
+wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
 echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> $HOME/.bash_profile
-source .bash_profile
+echo 'export GOROOT=/usr/local/go' >> $HOME/.bash_profile
+echo 'export GOPATH=$HOME/go' >> $HOME/.bash_profile
+echo 'export GO111MODULE=on' >> $HOME/.bash_profile &&  . $HOME/.bash_profile
+rm -rf go1.22.0.linux-amd64.tar.gz
 ```
 
 ```console
-# Gerekli repoları çekiyoruz
+#  Downloading the necessary repositories
 git clone https://github.com/airchains-network/evm-station.git
 git clone https://github.com/airchains-network/tracks.git
 ```
 
 ```console
-# evmos ağımızın kurulumuna başlıyoruz, bu localde çalışan kendi ağımız.
+# We are starting the setup of our Evmos network, which is our own network running locally.
 cd evm-station
 go mod tidy
 ```
 
 ```console
-# Bu komutla kurulumu tamamlıyoruz.
+# We are completing the installation with this command.
 /bin/bash ./scripts/local-setup.sh
 ```
 
 # 
 
-> Sonraki aşamalarda rpc lazım olacak, onun ayarını yapalım.
+> In the next steps, we will need RPC, let's configure that.
 
-> En altta RPC kısmı şu şekilde olacak.
+> The RPC section at the bottom will be as follows.
 
 ```
 nano ~/.evmosd/config/app.toml
@@ -56,19 +59,19 @@ nano ~/.evmosd/config/app.toml
 ![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
 
 
-> Böylece cosmos rpclerini public yapmayı öğrendiniz.
+>  This way, you have learned how to make Cosmos RPCs public.
 
 
-> Sistem dosyasının sağlıklı çalışabilmesi için bir env oluşturuyoruz.
+> We are creating an environment for the system file to function properly.
 
 ```console
 nano ~/.rollup-env
 ```
 
-> İçerisine gerekli değişkenleri giriyoruz.
+> We enter the necessary variables into it.
 
 ```console
-# buradaki kod bloğunda değiştirmeniz bir yer yok.
+# There is nothing to change in the code block here.
 CHAINID="stationevm_9000-1"
 MONIKER="localtestnet"
 KEYRING="test"
@@ -81,13 +84,13 @@ CONFIG=$HOMEDIR/config/config.toml
 APP_TOML=$HOMEDIR/config/app.toml
 GENESIS=$HOMEDIR/config/genesis.json
 TMP_GENESIS=$HOMEDIR/config/tmp_genesis.json
-        VAL_KEY="mykey"
+VAL_KEY="mykey"
 ```
 
-> Servis dosyasını yazıyoruz. User kullanıyorsanız `root` kısmını ona göre değiştirin.
+> We are writing the service file. If you are using the User, adjust the `root` part accordingly.
 
 ```console
-# tek komut tüm bloğu copy paste yapabilirsiniz yavrularım
+# You can copy and paste the entire block with just one command
 sudo tee /etc/systemd/system/rolld.service > /dev/null << EOF
 [Unit]
 Description=ZK
@@ -105,7 +108,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-> Servisleri güncelleyip başlatıyoruz.
+> We update and start the services.
 
 ```
 sudo systemctl daemon-reload
@@ -113,7 +116,7 @@ sudo systemctl enable rolld
 sudo systemctl start rolld
 sudo journalctl -u rolld -f --no-hostname -o cat
 ```
-> Logların aktığını görmelisiniz. 
+> You should see the logs flowing.
 
 ![image](https://github.com/ruesandora/Airchains/assets/101149671/64137490-6b3b-4678-ae26-81c90dd1f952)
 
@@ -121,19 +124,17 @@ sudo journalctl -u rolld -f --no-hostname -o cat
 #
 
 
-Bu komut bize private key verecek, saklıyoruz.
+This command will give us a private key, which we should store securely.
 ```console
 /bin/bash ./scripts/local-keys.sh
 ```
 
 #
 
-DA layer olarak eigenlayer kullanacağız. Bunun için key gerekiyor, binary indirip çalışması için izin veriyoruz.
-Resmi dökümanda celestia, avail kurulumları da var onlara da bakabilirsiniz.
-Mock, yani sahte DA da kullanabilirsiniz (mock ile bir süre puan kazanılmasına izin vereceklermiş)
-Şu an testnette sonradan DA değiştirilmiyor, güncellemeyle bunu mümkün kılacaklarını söylediler.
+We will use Avail Turing as the DA layer.
+You can also use a mock DA (mock will allow earning points for a period of time).
+Currently, on the testnet, the DA cannot be changed later, but they said they will make this possible with an update.
 
-Benim EigenDA seçme nedenim en kolay Celestia ve Eigen olması (token de bulması kolay), Celestia ezbere biliyoruz - bu sefer Eigen olsun.
 
 #
 
