@@ -320,6 +320,7 @@ sudo journalctl -u stationd -f --no-hostname -o cat
 ```
 
 
-<img width="560" alt="Ekran Resmi 2024-06-07 14 18 52" src="https://github.com/ruesandora/Airchains/assets/101149671/8aad779e-85f2-44dd-8c05-0131ea7f089a">
+![image](https://github.com/ahmkah/Airchains/assets/99053148/cd88d51b-8659-46da-ae78-ef452a6f70f9)
 
+https://points.airchains.io/
 
