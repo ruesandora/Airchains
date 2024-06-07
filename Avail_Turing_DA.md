@@ -297,11 +297,11 @@ Initially, we obtained a private key with the command `bin/bash ./scripts/local-
 Then we import this private key into Metamask, in the "Add Network" section.
 
 ```
-rpc http://IP:8545
+rpc: http://IP:8545
 
-id 1234
+id: 1234
 
-ticker eEVMOS
+ticker: eEVMOS
 ```
 
 We enter and confirm.
