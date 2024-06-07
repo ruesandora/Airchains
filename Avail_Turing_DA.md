@@ -183,8 +183,8 @@ sudo journalctl -u availd -f --no-hostname -o cat
 # Inside the file `~/.avail/identity/identity.toml`, you will find the Mnemonics of your Avail wallet. Copy and store these words. 
 # Close with Ctrl+c, press Enter, and make a note of the other `Avail-Mnemonics` given as they will be needed.
 # Add the copied Mnemonics to Polkadot.js or Talisman wallet, get your wallet address on the Avail Turing network and receive tokens from the faucet.
+[Avail-Faucet](https://faucet.avail.tools/)
 
- Avail-Faucet (https://faucet.avail.tools/)
 ```
 
 > We are now moving on to the track and station section.
