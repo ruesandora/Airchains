@@ -179,15 +179,14 @@ sudo journalctl -u availd -f --no-hostname -o cat
 ![image](https://github.com/ahmkah/Airchains/assets/99053148/364e88b4-d8eb-4e16-a5f9-abcf7c3c8482)
 
 
-```console
-# Inside the file `~/.avail/identity/identity.toml`, you will find the Mnemonics of your Avail wallet. Copy and store these words. 
-# Close with Ctrl+c, press Enter, and make a note of the other `Avail-Mnemonics` given as they will be needed.
-# Add the copied Mnemonics to Polkadot.js or Talisman wallet, get your wallet address on the Avail Turing network and receive tokens from the faucet.
 
-[Avail-Faucet](https://faucet.avail.tools/)
-[discord](https://discord.gg/airchains)
+> Inside the file `~/.avail/identity/identity.toml`, you will find the Mnemonics of your Avail wallet. Copy and store these words. 
+> Close with Ctrl+c, press Enter, and make a note of the other `Avail-Mnemonics` given as they will be needed.
+> Add the copied Mnemonics to Polkadot.js or Talisman wallet, get your wallet address on the Avail Turing network and receive tokens from the faucet.
 
-```
+> [Avail-Faucet](https://faucet.avail.tools/)
+
+
 
 > We are now moving on to the track and station section.
 
