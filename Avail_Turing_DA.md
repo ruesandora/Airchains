@@ -12,7 +12,7 @@
 Minimum: 2 vCPU 4 RAM
 Recommended: 4vCPU 8 RAM
 ```
-<h1 align="center">Intallation</h1>
+<h1 align="center">Installation</h1>
 
 ```console
 # Updating
