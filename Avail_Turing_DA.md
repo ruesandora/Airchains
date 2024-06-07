@@ -150,7 +150,7 @@ cd availup
 > We are writing the service file. If you are using the User, adjust the `root` part accordingly.
 
 ```console
-# You can copy and paste the entire block with just one command
+# You can copy and paste the entire block with just one command.
 sudo tee /etc/systemd/system/availd.service > /dev/null <<'EOF'
 [Unit]
 Description=Avail Light Node
@@ -187,7 +187,7 @@ sudo journalctl -u availd -f --no-hostname -o cat
  Avail-Faucet (https://faucet.avail.tools/)
 ```
 
-> Şimdi track ve station kısmına geçiyoruz. 
+> We are now moving on to the track and station section.
 
 ```console
 cd $HOME
@@ -195,40 +195,45 @@ cd tracks
 go mod tidy
 ```
 
-> tracks klasörü içindeyken aşağıdaki kodu başlatıyoruz. ```PUBLICHEX``` biraz önce aldığımız public key olacak. 
+> When we are inside the `tracks` folder, we start the following code. 
+> Enter the validator name `<moniker-name>`. Do not include <>
+> `daKey = <Avail-Mnemonic>`You can obtain your Avail mnemonics with `nano ~/.avail/identity/identity.toml`. Do not include <>
 
-> MONIKER (validatör ismi) değiştirebilirsiniz kafanıza göre. 
-
+![image](https://github.com/ahmkah/Airchains/assets/99053148/65b18e53-8084-497f-8efa-51eb9f162d2f)
 ```console
-go run cmd/main.go init --daRpc "disperser-holesky.eigenda.xyz" --daKey "PUBLICHEX" --daType "eigen" --moniker "MONIKER" --stationRpc "http://127.0.0.1:8545" --stationAPI "http://127.0.0.1:8545" --stationType "evm"
+avail_secret_uri = 'vessel spirit suggest harvest enjoy sort across tower round gossip topic clown true bottom pudding build zone subway proud forum border taxi gauge donor'
+```
+```console
+go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Mnomanic>" --daType "avail" --moniker "<moniker-name>" --stationRpc "http://127.0.0.1:8545" --stationAPI "http://127.0.0.1:8545" --stationType "evm"
 ```
 
 #
 
-> Çıktı şu şekilde olacak
+> The output will be as follows.
 
-![tg_image_2547108070](https://github.com/ruesandora/Airchains/assets/101149671/463e6802-ab58-4e3b-86d2-8ba8c1c15819)
+![image](https://github.com/ahmkah/Airchains/assets/99053148/7db7471e-e8ad-40a0-8975-513f6e0dee43)
+
 
 # 
 
-> Şimdi tracker adresi oluşturuyoruz. `TRACKERCUZDAN` değiştirin.
+> Now we are creating a tracker address. Please replace `<moniker-name>`.
 
-> Çıktıyı yedek alın, air prefixli cüzdanla [discordda](https://discord.gg/airchains) `switchyard faucet` kanalından token alın.
+> Take a backup of the output, and receive tokens from the channel with a wallet prefixed with 'air' [discordda](https://discord.gg/airchains) `switchyard faucet` .
 
 ```console
-go run cmd/main.go keys junction --accountName TRACKERCUZDAN --accountPath $HOME/.tracks/junction-accounts/keys
+go run cmd/main.go keys junction --accountName <moniker-name> --accountPath $HOME/.tracks/junction-accounts/keys
 ```
 
-> Sonra proveri çalıştırıyoruz.
+> Then we run the prover.
 
 ```console
 go run cmd/main.go prover v1EVM
 ```
 
-> Şimdi bize node id lazım, bunu da şurdan alıyoruz.
+> Now we need the node id, which we obtain from here.
 
 ```console
-# ctrl w ile node id aratabilirsiniz, en aşağı gidip biraz yukarıda
+# You can search for the node id with Ctrl + W, go to the bottom, and scroll up a bit.
 nano ~/.tracks/config/sequencer.toml
 ```
 
