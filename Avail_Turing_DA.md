@@ -162,7 +162,7 @@ User=root
 Type=simple
 Restart=always
 RestartSec=120
-ExecStart=/root/.avail/turing/bin/avail-light --network turing --app-id 36 
+ExecStart=/root/.avail/turing/bin/avail-light --network turing --app-id 36 --identity /root/.avail/identity/identity.toml
 
 [Install]
 WantedBy=multi-user.target
