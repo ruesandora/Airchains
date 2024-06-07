@@ -218,7 +218,7 @@ go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Mnomanic
 
 > Now we are creating a tracker address. Please replace `<moniker-name>`.
 
-> Take a backup of the output, and receive tokens from the channel with a wallet prefixed with 'air' [discordda](https://discord.gg/airchains) `switchyard faucet` .
+> Take a backup of the output, and receive tokens from the channel with a wallet prefixed with 'air' [discord](https://discord.gg/airchains) `switchyard faucet` .
 
 ```console
 go run cmd/main.go keys junction --accountName <moniker-name> --accountPath $HOME/.tracks/junction-accounts/keys
@@ -241,26 +241,22 @@ nano ~/.tracks/config/sequencer.toml
 
 #
 
-> Aşağıdaki kodda
-
-> `TRACKERCUZDAN` yukarda yazdığınız adı
-
-> `TRACKERCUZDAN-ADRESI` buna da air cüzdanı 
-
-> `IP` ip adresiniz
-
-> `NODEID` sequencer.toml dan temin ettiğimiz node id olacak
+> Prepare some preparations for this part and prepare the following command.
+> SERVER(VPS) IP `<IP>`
+> Get `nodeid>` in the `nano ~/.tracks/config/sequencer.toml` file
+> Enter the `AIRCHAIN wallet address` you created before `<WALLET_ADDRESS>`
+> Enter the validator name `<moniker-name>`
 
 
 ```console
-go run cmd/main.go create-station --accountName TRACKERCUZDAN --accountPath $HOME/.tracks/junction-accounts/keys --jsonRPC "https://airchains-testnet-rpc.cosmonautstakes.com/" --info "EVM Track" --tracks TRACKERCUZDAN-ADRESI --bootstrapNode "/ip4/IP/tcp/2300/p2p/NODEID"
+go run cmd/main.go create-station --accountName <moniker-name> --accountPath $HOME/.tracks/junction-accounts/keys --jsonRPC "https://airchains-testnet-rpc.cosmonautstakes.com/" --info "EVM Track" --tracks <WALLET_ADDRESS> --bootstrapNode "/ip4/<IP>/tcp/2300/p2p/<node_id>"
 ```
 
 #
 
-> Stationu kurduk, şimdi bunu servisle çalıştıralım. 
+> We have set up the station, now let's run it with a service.
 
-> Servis çalıştırmak istemeyenler screen açıp tracks klasöründe `go run cmd/main.go start` komutunu çalıştırabilirler.
+
 
 ```console
 sudo tee /etc/systemd/system/stationd.service > /dev/null << EOF
@@ -286,33 +282,32 @@ sudo systemctl restart stationd
 sudo journalctl -u stationd -f --no-hostname -o cat
 ```
 
-<h1 align="center">Kurulum tamam ama?</h1>
+<h1 align="center">Installation complete, right?</h1>
 
-Kurulum işlemleri bu kadar. Ama şu an puan kazanmıyorsunuz. 
-Tracker cüzdanınızın mnemoniclerini leap wallet import edip https://points.airchains.io/ connect diyoruz 
-Dashboardda stationu ve puanınızı görebilirsiniz. 
-Henüz tx yapmadığımız için 100 point pending görünecek. Bunun sebebi şu, puan kazanmanız için pod çıkarmanız lazım.
-Pod 25txten oluşan bir paket gibi düşünebilirsiniz. Her 25tx 1 pod çıkaracak ve bu işlemlerden 5 puan kazanacaksınız. 
-İlk kurulumdaki 100 puan, ilk poddan sonra aktif olacak.
+You have completed the installation process. However, currently, you are not earning points.
+We recommend importing the mnemonics of your Tracker wallet into the Leap wallet and connecting to https://points.airchains.io/.
+You can view your station and points on the dashboard.
+Since we haven't made any transactions yet, you will see 100 points pending. The reason for this is that you need to extract a pod to earn points.
+You can think of a pod as a package consisting of 25 transactions. Each set of 25 transactions will generate 1 pod, and you will earn 5 points from these transactions.
+The initial 100 points from the installation will become active after the first pod.
 
-Bunun için de şunu yapıyoruz
-İlk başta `bin/bash ./scripts/local-keys.sh` komutuyla bir priv key aldık ve rpc ayarı yapmıştık.
-Metamaska bu priv keyi import ediyoruz, ağ ekle kısmında da 
+For this, we do the following:
+Initially, we obtained a private key with the command `bin/bash ./scripts/local-keys.sh` and made RPC settings.
+Then we import this private key into Metamask, in the "Add Network" section.
 
 ```
 rpc http://IP:8545
 
-id 9000
+id 1234
 
-ticker tEVMOS
+ticker eEVMOS
 ```
 
-girip okeyliyoruz.
+We enter and confirm.
 
-Buradan artık kontrat mı deploy edersiniz, manuel tx mi kasarsınız size kalmış.
+From here on, you can either deploy a contract or manually send transactions; it's up to you.
 
-Track işleminde rpc hatası alanlar rollback yapmayı denesinler. Bazen 1 bazen 3 rollback işlemiyle sorun çözülüyor.
-Kaç kez rollback yapmak istiyorsanız ``go run cmd/main.go rollback`` komutunu o kadar çalıştırın, her seferinde çıktıyı bekleyin.
+For those experiencing RPC errors during the tracking process, they can try to roll back. Sometimes the issue is resolved with 1 rollback, other times it may require 3 rollback operations. Run the command `go run cmd/main.go rollback` as many times as you want to perform a rollback. Wait for the output after each run.
 
 ```
 systemctl stop stationd
@@ -323,8 +318,6 @@ sudo systemctl restart stationd
 sudo journalctl -u stationd -f --no-hostname -o cat
 ```
 
-
-Hadi sağlıcakla.
 
 <img width="560" alt="Ekran Resmi 2024-06-07 14 18 52" src="https://github.com/ruesandora/Airchains/assets/101149671/8aad779e-85f2-44dd-8c05-0131ea7f089a">
 
