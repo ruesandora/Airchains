@@ -39,19 +39,20 @@ npm install -g npm@latest
 
 ```
 
-> "screen" kurulumu
+> Screen Kurulumu
 
-````
+```
+
 sudo apt install screen
 screen -S bot
 
 ```
 
-
 > Daha sonra burada yeni bir klasör oluştur. npm ile proje oluştur. hepsini enter ile geçebilirsin.
 
 ```
 mkdir bot
+cd bot
 npm init
 
 ```
@@ -80,8 +81,4 @@ node index.js
 
 ```
 
-
 > Herşey doğru ise Stored Data sürekli aratacak. "CTRL + A D" ile screenden çıkabilirsin.
-
-
-
