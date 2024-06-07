@@ -71,7 +71,7 @@ nano ~/.rollup-env
 > We enter the necessary variables into it.
 
 ```console
-# There is nothing to change in the code block here.
+# There is nothing to change ın the code block here.
 CHAINID="stationevm_9000-1"
 MONIKER="localtestnet"
 KEYRING="test"
@@ -90,7 +90,7 @@ VAL_KEY="mykey"
 > We are writing the service file. If you are using the User, adjust the `root` part accordingly.
 
 ```console
-# You can copy and paste the entire block with just one command
+# You can copy and paste the entire block with just one command.
 sudo tee /etc/systemd/system/rolld.service > /dev/null << EOF
 [Unit]
 Description=ZK
