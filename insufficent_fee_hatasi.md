@@ -1,4 +1,4 @@
-Yeni sürümdeki gas hatası sebebiyle yetersiz fee hatası alınabiliyor. 
+Yeni sürümdeki gas sınırları sebebiyle yetersiz fee hatası alınabiliyor. 
 Güncelleme gelene kadar bunu uygulayabilirsiniz.
 
 ![image](https://github.com/neuweltgeld/Airchains_/assets/101174090/c4651e1c-ee88-4a65-8a01-bffaf56035a0)
