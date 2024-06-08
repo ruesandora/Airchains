@@ -212,8 +212,6 @@ go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Mnomanic
 
 > The output will be as follows.
 
-![image](https://github.com/ahmkah/Airchains/assets/99053148/7db7471e-e8ad-40a0-8975-513f6e0dee43)
-
 
 # 
 
