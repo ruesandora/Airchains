@@ -21,7 +21,7 @@ contract SimpleStorage {
 }
 ```
 
-<h1 align="center">Sunucuya kurulum yapma</h1>
+<h1 align="center">Node.js ve npm kurulumu yapma</h1>
 
 > Npm ve node.js kurulumunu yapalım
 
@@ -39,14 +39,6 @@ npm install -g npm@latest
 
 ```
 
-> Screen Kurulumu
-
-```
-
-sudo apt install screen
-screen -S bot
-
-```
 
 > Daha sonra burada yeni bir klasör oluştur. npm ile proje oluştur. hepsini enter ile geçebilirsin.
 
@@ -81,4 +73,4 @@ node index.js
 
 ```
 
-> Herşey doğru ise Stored Data sürekli aratacak. "CTRL + A D" ile screenden çıkabilirsin.
+> Herşey doğru ise Stored Data sürekli aratacak.
