@@ -3,6 +3,7 @@ Güncelleme gelene kadar bunu uygulayabilirsiniz.
 
 ![image](https://github.com/neuweltgeld/Airchains_/assets/101174090/c4651e1c-ee88-4a65-8a01-bffaf56035a0)
 
+```console
 # cüzdanda yeteri kadar amf token olduğuna emin olun
 # trackeri durdurun
 
@@ -30,3 +31,4 @@ go mod tidy
 # trackeri yeniden başlatın
 
 systemctl restart stationd && sudo journalctl -u stationd -f --no-hostname -o cat
+```
