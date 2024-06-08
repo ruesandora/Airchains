@@ -182,7 +182,7 @@ sudo journalctl -u availd -f --no-hostname -o cat
 
 > Inside the file `~/.avail/identity/identity.toml`, you will find the Mnemonics of your Avail wallet. Copy and store these words. 
 > Close with Ctrl+c, press Enter, and make a note of the other `Avail-Mnemonics` given as they will be needed.
-> Add the copied Mnemonics to Polkadot.js or Talisman wallet, get your wallet address on the Avail Turing network and receive tokens from the faucet.
+> Add the copied Mnemonics to Polkadot.js or Talisman wallet get your wallet address on the Avail Turing network and receive tokens from the faucet.
 
 > [Avail-Faucet](https://faucet.avail.tools/)
 
@@ -198,14 +198,14 @@ go mod tidy
 
 > When we are inside the `tracks` folder, we start the following code. 
 > Enter the validator name `<moniker-name>`. Do not include <>
-> `daKey = <Avail-Mnemonic>`You can obtain your Avail mnemonics with `nano ~/.avail/identity/identity.toml`. Do not include <>
+> `daKey = <Avail-Wallet-Adress>`You can obtain your Avail mnemonics with `nano ~/.avail/identity/identity.toml`. Add the copied Mnemonics to Polkadot.js or Talisman wallet, get your wallet address on the Avail Turing network. Do not include <>
 
 ![image](https://github.com/ahmkah/Airchains/assets/99053148/65b18e53-8084-497f-8efa-51eb9f162d2f)
 ```console
 avail_secret_uri = 'vessel spirit suggest harvest enjoy sort across tower round gossip topic clown true bottom pudding build zone subway proud forum border taxi gauge donor'
 ```
 ```console
-go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Mnomanic>" --daType "avail" --moniker "<moniker-name>" --stationRpc "http://127.0.0.1:8545" --stationAPI "http://127.0.0.1:8545" --stationType "evm"
+go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Mnomanic>" --daType "avail" --moniker "<Avail-Wallet-Adress>" --stationRpc "http://127.0.0.1:8545" --stationAPI "http://127.0.0.1:8545" --stationType "evm"
 ```
 
 #
