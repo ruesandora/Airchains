@@ -270,6 +270,10 @@ ticker tEVMOS
 
 girip okeyliyoruz.
 
+Ayrıca rpc'ye bağlanabilmek için 8545 numaralı portu açıyoruz o da şu komutla 
+```
+sudo ufw allow 8545
+```
 Buradan artık kontrat mı deploy edersiniz, manuel tx mi kasarsınız size kalmış.
 
 Track işleminde rpc hatası alanlar rollback yapmayı denesinler. Bazen 1 bazen 3 rollback işlemiyle sorun çözülüyor.
