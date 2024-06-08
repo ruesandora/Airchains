@@ -43,22 +43,6 @@ go mod tidy
 /bin/bash ./scripts/local-setup.sh
 ```
 
-# 
-
-> Sonraki aşamalarda rpc lazım olacak, onun ayarını yapalım.
-
-> En altta RPC kısmı şu şekilde olacak.
-
-```
-nano ~/.evmosd/config/app.toml
-```
-
-![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
-
-
-> Böylece cosmos rpclerini public yapmayı öğrendiniz.
-
-
 > Sistem dosyasının sağlıklı çalışabilmesi için bir env oluşturuyoruz.
 
 ```console
@@ -69,7 +53,6 @@ nano ~/.rollup-env
 
 ```console
 # buradaki kod bloğunda değiştirmeniz bir yer yok.
-CHAINID="stationevm_9000-1"
 MONIKER="localtestnet"
 KEYRING="test"
 KEYALGO="eth_secp256k1"
@@ -96,7 +79,7 @@ After=network.target
 [Service]
 User=root
 EnvironmentFile=/root/.rollup-env
-ExecStart=/root/evm-station/build/station-evm start --metrics "" --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --chain-id stationevm_9000-1
+ExecStart=/root/evm-station/build/station-evm start --metrics "" --log_level info --json-rpc.api eth,txpool,personal,net,debug,web3 --chain-id "stationevm_1234-1"
 Restart=always
 RestartSec=3
 
@@ -119,6 +102,33 @@ sudo journalctl -u rolld -f --no-hostname -o cat
 
 
 #
+
+# 
+
+> Sonraki aşamalarda rpc lazım olacak, onun ayarını yapalım.
+> Önce çalışan nodu durduralım
+
+```
+systemctl stop rolld
+```
+
+> Sonra app.toml dosyasına gidelim.
+> En altta RPC kısmı şu şekilde olacak.
+
+```
+nano ~/.evmosd/config/app.toml
+```
+
+> Ayarı yaptıktan sonra kaydedip çıkalım ve nodu tekrar başlatalım.
+
+```
+systemctl restart rolld
+```
+
+![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
+
+
+> Böylece cosmos rpclerini public yapmayı öğrendiniz.
 
 
 Bu komut bize private key verecek, saklıyoruz.
@@ -214,7 +224,7 @@ nano ~/.tracks/config/sequencer.toml
 
 
 ```console
-go run cmd/main.go create-station --accountName TRACKERCUZDAN --accountPath $HOME/.tracks/junction-accounts/keys --jsonRPC "https://airchains-testnet-rpc.cosmonautstakes.com/" --info "EVM Track" --tracks TRACKERCUZDAN-ADRESI --bootstrapNode "/ip4/IP/tcp/2300/p2p/NODEID"
+go run cmd/main.go create-station --accountName TRACKERCUZDAN --accountPath $HOME/.tracks/junction-accounts/keys --jsonRPC "https://junction-testnet-rpc.synergynodes.com/" --info "EVM Track" --tracks TRACKERCUZDAN-ADRESI --bootstrapNode "/ip4/IP/tcp/2300/p2p/NODEID"
 ```
 
 #
@@ -258,15 +268,17 @@ Pod 25txten oluşan bir paket gibi düşünebilirsiniz. Her 25tx 1 pod çıkarac
 
 Bunun için de şunu yapıyoruz
 İlk başta `bin/bash ./scripts/local-keys.sh` komutuyla bir priv key aldık ve rpc ayarı yapmıştık.
-Metamaska bu priv keyi import ediyoruz, ağ ekle kısmında da 
+Metamaska bu priv keyi import ediyoruz, ağ ekle kısmında da şu bilgileri girin.
 
 ```
 rpc http://IP:8545
 
-id 9000
+id 1234
 
 ticker tEVMOS
 ```
+![image](https://github.com/neuweltgeld/Airchains_/assets/101174090/578659e5-e1ad-4193-a6bf-b1da38de0a7e)
+
 
 girip okeyliyoruz.
 
@@ -282,7 +294,6 @@ Kaç kez rollback yapmak istiyorsanız ``go run cmd/main.go rollback`` komutunu 
 ```
 systemctl stop stationd
 cd tracks
-git pull
 go run cmd/main.go rollback
 sudo systemctl restart stationd
 sudo journalctl -u stationd -f --no-hostname -o cat
