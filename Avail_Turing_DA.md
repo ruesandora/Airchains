@@ -205,7 +205,7 @@ go mod tidy
 avail_secret_uri = 'vessel spirit suggest harvest enjoy sort across tower round gossip topic clown true bottom pudding build zone subway proud forum border taxi gauge donor'
 ```
 ```console
-go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Mnomanic>" --daType "avail" --moniker "<Avail-Wallet-Adress>" --stationRpc "http://127.0.0.1:8545" --stationAPI "http://127.0.0.1:8545" --stationType "evm"
+go run cmd/main.go init --daRpc "http://127.0.0.1:7000" --daKey "<Avail-Wallet-Adress>" --daType "avail" --moniker "<moniker-name>" --stationRpc "http://127.0.0.1:8545" --stationAPI "http://127.0.0.1:8545" --stationType "evm"
 ```
 
 #
