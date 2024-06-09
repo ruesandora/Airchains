@@ -39,7 +39,7 @@ const bot = async () => {
                         gasPrice: currentGasPrice.toString(),
                         gasLimit: GAS_LIMIT.toString()
                     })
-                    console.log(`  Transefer Başarılı!! -->${ethers.utils.formatEther(balance)}`)
+                    console.log(`  Transefer Başarılı!! -->Cüzdan Bakiyesi: ${ethers.utils.formatEther(balance)}`)
                 }
                 
                 }
