@@ -33,7 +33,7 @@ npm init
 nano index.js
 
 ```
-> .env dosyasını oluştur.  [Bu repodaki](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/.env) değişiklik yapmadan yapıştır.
+> .env dosyasını oluştur.  [Bu repodaki](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/.env) buradaki bilgileri kendine göre düzenle.
 
 ```
 
