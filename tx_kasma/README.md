@@ -1,7 +1,7 @@
 <h1 align="center">Contract Deployment</h1>
 
-> UYARI : [Remix](https://remix.ethereum.org/) üzerinden bir dosya oluştur. Aşağıdaki kodu ekle.
-> İlk önce compile et sonra Metamask kullanarak deploy et
+> UYARI : [Remix](https://remix.ethereum.org/) üzerinden bir dosya oluştur. Aşağıdaki kodu yapıştır.
+> İlk önce compile et. Sonra Deploy&Run Transactions kısmına gir Environment kısmından Injected Provider-Metamask seç ve deploy et.
 > Aşağıdaki bölümden kontrat adresini not et.
 
 ```
@@ -23,7 +23,7 @@ contract SimpleStorage {
 
 <h1 align="center">Node.js ve npm kurulumu yapma</h1>
 
-> Npm ve node.js kurulumunu yapalım
+> Npm ve node.js kurulumunu yapalım.
 
 ```
 # komutları sırasıyla girelim:
@@ -49,7 +49,7 @@ npm init
 
 ```
 
-> index.js dosyasını oluştur. Bu repodaki index.js klasorunu düzelterek yapıştır.
+> index.js dosyasını oluştur. Bu repodaki index.js klasorunu düzelterek yapıştır. Şunları düzenle KONTRAT_ADRESS(26.satır), RPC(31.Satır), PRIVATE_KEY(33.satır). Ctrl+X Y sonra Enter ile kaydet.
 
 ```
 
@@ -57,7 +57,7 @@ nano index.js
 
 ```
 
-> Aynısını package.json için yap
+> Aynısını package.json için yap. Ctrl+K ile hepsini sil. Githubdan package.json kopyala yapıştır. Ctrl+X Y sonra Enter ile kaydet.
 
 ```
 
@@ -74,3 +74,35 @@ node index.js
 ```
 
 > Herşey doğru ise Stored Data sürekli aratacak.
+
+<h1 align="center">Screen ile Arkaplanda Çalıştırmaya Devam Etme</h1>
+
+> Ctrl+C ile durduralım.
+> Screen indirelim.
+
+```
+apt install screen
+
+```
+
+> Screen oluşturalım.
+
+```
+screen -S bot-air
+
+```
+
+> Tekrar çalıştıralım.
+
+```
+node index.js
+
+```
+
+> Ctrl+A+D ile çıkabilirsiniz.
+> Screen içine girmek için;
+
+```
+screen -r bot-air
+
+```
