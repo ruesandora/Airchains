@@ -26,7 +26,7 @@ npm init
 
 ```
 
-> index.js dosyasını oluştur.  [Bu repodaki](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/index.js) index.js klasorunu düzelterek yapıştır.
+> index.js dosyasını oluştur.  [Bu repodaki](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/index.js) index.js değişiklik yapmadan yapıştır.
 
 ```
 
@@ -34,7 +34,7 @@ nano index.js
 
 ```
 
-> Aynısını package.json için yap
+> Aynısını [package.json](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/package.json) için yap
 
 ```
 
@@ -50,4 +50,4 @@ node index.js
 
 ```
 
-> Herşey doğru ise Stored Data sürekli aratacak.
+> Sıkıntı çıkmazsa Transefer Başarılı!! -->CÜZDAN BAKİYESİ
