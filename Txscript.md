@@ -1,0 +1,100 @@
+### GEREKLİ KURULUMLAR
+
+```
+sudo apt install curl git wget htop tmux build-essential jq make lz4 gcc unzip screen -y
+```
+```
+sudo apt install -y curl git jq lz4 build-essential cmake perl automake autoconf libtool wget libssl-dev -y
+```
+```
+curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+```
+
+### NODEJS-NPM KURULUMU
+```
+sudo apt-get install -y nodejs
+```
+```
+sudo apt install nodejs npm 
+```
+```
+npm install -g npm@10.8.1
+```
+```
+npm install web3@1.5.3
+```
+
+### Scripti oluşturalım
+```
+nano ruesandoratx.js
+```
+- Aşağıdaki kodu, hiçbirşey değiştirmeden içine kaydedip, ctrl X+Y enter ile kaydedip, çıkın.
+
+```
+const readline = require('readline');
+const Web3 = require('web3');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('Enter your MetaMask wallet private key: ', (privateKey) => {
+  rl.question('Enter the wallet address you want to send to: ', (toAddress) => {
+    rl.question('Enter the amount you want to send (in tevmos): ', (amount) => {
+      rl.question('How often do you want to repeat the transaction? (in seconds): ', (interval) => {
+
+        const rpcURL = "http://localhost:8545"; // or your server's IP: "http://your-server-ip:8545"
+        const web3 = new Web3(new Web3.providers.HttpProvider(rpcURL));
+
+        function sendTransaction() {
+          const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+          web3.eth.accounts.wallet.add(account);
+          web3.eth.defaultAccount = account.address;
+
+          const tx = {
+            from: web3.eth.defaultAccount,
+            to: toAddress,
+            value: web3.utils.toWei(amount, 'ether'),
+            gas: 21000,
+            gasPrice: web3.utils.toWei('1', 'gwei')
+          };
+
+          web3.eth.sendTransaction(tx)
+            .then(receipt => {
+              console.log('Transaction successful with hash:', receipt.transactionHash);
+            })
+            .catch(err => {
+              console.error('Error sending transaction:', err);
+            });
+        }
+
+        setInterval(sendTransaction, interval * 1000);
+
+        rl.close();
+      });
+    });
+  });
+});
+
+```
+
+## TX scriptimizi çalıştıralım
+- Yeni bir screen açalım
+
+```
+screen -S ototx 
+```
+
+```
+node ruesandoratx.js
+```
+- Gelen sorulara 
+1) Enter your MetaMask wallet private key: /bin/bash ./scripts/local-setup.sh komutu ile aldığımız private key
+2) Enter the wallet address you want to send to : Herhangi bir evm cüzdan adresi
+3) Enter the amount you want to send : Evmos cinsinden ne kadar göndermek istediğimiz.5-10 yazılabilir
+4) How often do you want to repeat the transaction : Kaç saniyede bir tx atmasını istiyorsak saniye cinsinden onu yazın.40-50-60 saniye girilebilir.
+
+<img width="874" alt="Ekran Resmi 2024-06-09 14 59 11" src="https://github.com/enyaselessar/Airchains/assets/108255403/46787796-4415-4aa2-87c5-46893cdb06c1">
+
+
