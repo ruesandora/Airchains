@@ -1,7 +1,7 @@
 <h1 align="center">Contract Deployment</h1>
 
 > UYARI : [Remix](https://remix.ethereum.org/) üzerinden bir dosya oluştur. Aşağıdaki kodu yapıştır.
-> İlk önce compile et. Sonra Deploy&Run Transactions kısmına gir Environment kısmından Injected Provider-Metamask seç ve deploy et.
+> İlk önce compile et. Sonra Deploy&Run Transactions kısmına gir `Environment` kısmından `Injected Provider-Metamask` seç ve deploy et.
 > Aşağıdaki bölümden kontrat adresini not et.
 
 ```
