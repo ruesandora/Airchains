@@ -26,7 +26,7 @@ npm init
 
 ```
 
-> index.js dosyasını oluştur.  [Bu repodaki]([https://discord.gg/airchains](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/index.js)) index.js klasorunu düzelterek yapıştır.
+> index.js dosyasını oluştur.  [Bu repodaki](https://discord.gg/airchains](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/index.js) index.js klasorunu düzelterek yapıştır.
 
 ```
 
