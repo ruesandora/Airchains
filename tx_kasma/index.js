@@ -28,9 +28,9 @@ const contractAddress = "0xd85df3acbb6e4aecaebb4ef671f0f54daa14a8d5";
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function get() {
-  const provider = new ethers.providers.JsonRpcProvider("http://88.99.169.2:8545");
+  const provider = new ethers.providers.JsonRpcProvider("IP_RPC");
 
-  const private = "8301E5BF97E50E3E8AC98DFB4B1448A1C5FBF9C69272B69674BC82273A43CB1E";
+  const private = "PRIVATE_KEY";
 
   //for sending from account 0
 
