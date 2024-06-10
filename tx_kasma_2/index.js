@@ -38,7 +38,7 @@ const bot = async () => {
                         gasPrice: currentGasPrice.toString(),
                         gasLimit: GAS_LIMIT.toString()
                     })
-                    console.log(`  Transfer Başarılı --> Cüzdan bakiyesi${ethers.utils.formatEther(balance)}`)
+                    console.log(`  Transfer Başarılı --> Cüzdan bakiyesi: ${ethers.utils.formatEther(balance)}`)
                 } catch (error) {
                     console.log(`  HATA, TEKRAR DENENİYOR...`);
                 }
