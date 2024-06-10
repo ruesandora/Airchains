@@ -1,5 +1,5 @@
 >Öncelikle bir cüzdan adresine ihtiyacımız var. Cüzdan adresini .env yi düzenlerken kullanacağız
-<h1 align="center">Node.js ve npm kurulumu yapma</h1>
+<h1 align="center">Node.js ve npm kurulumu </h1>
 
 > Npm ve node.js kurulumunu yapalım
 
