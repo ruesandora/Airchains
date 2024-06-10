@@ -74,3 +74,18 @@ node index.js
 ```
 
 > Herşey doğru ise Stored Data sürekli aratacak.
+
+
+> Sürekli çalışmasını istiyorsan screende çalıştırabilirsin:
+> önce screen açalım
+```
+screen -S SCREENİSMİGİRİN
+
+```
+> Screen içerisinde başlatalım işlemi:
+```
+node index.js
+
+```
+> Screenden çıkın ctrl a+d ile (botu durdurmak istiyorsanız ctrl+c yapabilirsiniz screen içinde
+> Tekrar Screen içine girmek için screen -r screenismi
