@@ -1,4 +1,3 @@
-
 const ethers = require('ethers')
 require('dotenv').config();
 const {
@@ -24,26 +23,28 @@ async function getCurrentGasPrice() {
 
 const bot = async () => {
     provider.on("block", async () => {
-        console.log("   Yeni BlokOluştu" )
+        console.log("  Yeni Tx Oluşturuluyor...")
         const _target = new ethers.Wallet(PRIVATE_KEY)
         const target = _target.connect(provider)
         const balance = await provider.getBalance(target.address)
         const currentGasPrice = await getCurrentGasPrice();
         const balanceinEther = ethers.utils.formatEther(balance)
         if (Number(balanceinEther) > 0 && Number(currentGasPrice) > 0) {
-            let withdrawAmount = Number(balance) - (Number(GAS_LIMIT) * Number(currentGasPrice));
+            
+            try {
                     await target.sendTransaction({
                         to: ADDRESS_RECEIVER,
-                        value:1000000000000000
-                        .toString(),
+                        value:1 .toString(),
                         gasPrice: currentGasPrice.toString(),
                         gasLimit: GAS_LIMIT.toString()
                     })
-                    console.log(`  Transefer Başarılı!! -->Cüzdan Bakiyesi: ${ethers.utils.formatEther(balance)}`)
-                }
-                
+                    console.log(`  Transfer Başarılı --> Cüzdan bakiyesi${ethers.utils.formatEther(balance)}`)
+                } catch (error) {
+                    console.log(`  HATA, TEKRAR DENENİYOR...`);
                 }
             
+        }
+    }
     )
 }
 
