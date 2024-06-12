@@ -251,6 +251,7 @@ EOF
 ```
 
 ```console
+screen -S air
 sudo systemctl daemon-reload
 sudo systemctl enable stationd
 sudo systemctl restart stationd
