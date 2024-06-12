@@ -23,7 +23,7 @@ const contractABI = [
   },
 ];
 
-const contractAddress = "PRICKEY";
+const contractAddress = "PRIVKEY";
 
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
