@@ -25,12 +25,12 @@ const contractABI = [
 
 const contractAddress = "KONTRAT_ADRESS";
 
-const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // Rastgele bekleme süresi belirleyen fonksiyon
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 // Rastgele 5 ila 15 saniye arasında bekleme süresi belirleyen fonksiyon
 const randomBekleme = () => Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+
 async function get() {
   const provider = new ethers.providers.JsonRpcProvider("RPC");
 
