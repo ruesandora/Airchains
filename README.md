@@ -49,7 +49,7 @@ go mod tidy
 nano ~/.rollup-env
 ```
 
-> İçerisine gerekli değişkenleri giriyoruz.
+> İçerisine gerekli değişkenleri giriyoruz ardından ctrl+x, y ve enter tuşlarına basarak çıkıyoruz.
 
 ```console
 # buradaki kod bloğunda değiştirmeniz bir yer yok.
