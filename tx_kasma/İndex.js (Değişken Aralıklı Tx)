@@ -23,7 +23,7 @@ const contractABI = [
   },
 ];
 
-const contractAddress = "0x3abd58e66250e3b4f4c932f6bf7d2259a89d2bb5";
+const contractAddress = "PRICKEY";
 
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -34,9 +34,9 @@ function getRandomWaitTime() {
 }
 
 async function get() {
-  const provider = new ethers.providers.JsonRpcProvider("http://65.21.105.36:8545");
+  const provider = new ethers.providers.JsonRpcProvider("RPC");
 
-  const private = "5F37BF6CADD40D9CBEC903BEBFF037B44DB816ACC22BEA9E38FEDA4F7D9BA7F6";
+  const private = "CONTRACT";
 
   //for sending from account 0
 
