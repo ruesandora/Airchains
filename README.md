@@ -96,7 +96,7 @@ sudo systemctl enable rolld
 sudo systemctl start rolld
 sudo journalctl -u rolld -f --no-hostname -o cat
 ```
-> Logların aktığını görmelisiniz. 
+> Logların aktığını görmelisiniz, ardından ctrl+c ile logları durduruyoruz.
 
 ![image](https://github.com/ruesandora/Airchains/assets/101149671/64137490-6b3b-4678-ae26-81c90dd1f952)
 
