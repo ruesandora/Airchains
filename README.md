@@ -118,14 +118,14 @@ systemctl stop rolld
 ```
 nano ~/.evmosd/config/app.toml
 ```
+![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
 
-> Ayarı yaptıktan sonra kaydedip çıkalım ve nodu tekrar başlatalım.
+> Ayarı yaptıktan sonra ctrl+x, y ve enter ile kaydedip çıkalım ve nodu tekrar başlatalım.
 
 ```
 systemctl restart rolld
 ```
 
-![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
 
 
 > Böylece cosmos rpclerini public yapmayı öğrendiniz.
