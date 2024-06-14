@@ -23,7 +23,7 @@ const contractABI = [
   },
 ];
 
-const contractAddress = "0xd85df3acbb6e4aecaebb4ef671f0f54daa14a8d5";
+const contractAddress = "CONTRACT_ADDRESS";
 
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -64,7 +64,8 @@ async function get() {
       console.log(`HATA: ${error}`);
     }
 
-    await bekle(1000);
+    const delay = Math.floor(Math.random() * (100000 - 10000 + 1)) + 10000;
+    await bekle(delay);
   }
 }
 
