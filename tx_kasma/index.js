@@ -23,12 +23,12 @@ const contractABI = [
   },
 ];
 
-const contractAddress = "KONTRAT_ADRESS";
+const contractAddress = "CONTRACT_ADDRESS";
 
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function get() {
-  const provider = new ethers.providers.JsonRpcProvider("RPC");
+  const provider = new ethers.providers.JsonRpcProvider("IP_RPC");
 
   const private = "PRIVATE_KEY";
 
@@ -64,7 +64,8 @@ async function get() {
       console.log(`HATA: ${error}`);
     }
 
-    await bekle(1000);
+    const delay = Math.floor(Math.random() * (100000 - 10000 + 1)) + 10000;
+    await bekle(delay);
   }
 }
 
