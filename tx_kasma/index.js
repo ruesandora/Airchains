@@ -29,7 +29,7 @@ const contractAddress = "KONTRAT_ADRESS";
 // Rastgele bekleme süresi belirleyen fonksiyon
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // Rastgele 5 ila 15 saniye arasında bekleme süresi belirleyen fonksiyon
-const randomBekleme = () => Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+
 
 async function get() {
   const provider = new ethers.providers.JsonRpcProvider("RPC");
@@ -49,8 +49,9 @@ async function get() {
   console.log(`${senderAccount.address} is ready. Please wait`);
   let bnonce = 0;
   while (true) {
+    const randomBekleme = () => Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
     const nonce = await provider.getTransactionCount(senderAccount.address);
-    console.log(`**************Önceki nonce: ${bnonce} şu an ${nonce}`);
+    console.log(`**************Önceki nonce: ${bnonce} şu an ${nonce} beklenilen sure ${randomBekleme} `);
     let gasPrice = await provider.getGasPrice();
     console.log(`gas: ${gasPrice}`);
     try {
