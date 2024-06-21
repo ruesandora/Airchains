@@ -23,18 +23,15 @@ const contractABI = [
   },
 ];
 
-const contractAddress = "KONTRAT_ADRESS";
+const contractAddress = "KONTRAT ADRESİ";
 
-
-// Rastgele bekleme süresi belirleyen fonksiyon
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-// Rastgele 5 ila 15 saniye arasında bekleme süresi belirleyen fonksiyon
-const randomBekleme = () => Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
+
 
 async function get() {
   const provider = new ethers.providers.JsonRpcProvider("RPC");
 
-  const private = "PRIVATE_KEY";
+  const private = "PRIVATE KEY";
 
   //for sending from account 0
 
@@ -49,8 +46,9 @@ async function get() {
   console.log(`${senderAccount.address} is ready. Please wait`);
   let bnonce = 0;
   while (true) {
+    const delay = Math.floor(Math.random() * (30000 - 10000 + 1)) + 10000;
     const nonce = await provider.getTransactionCount(senderAccount.address);
-    console.log(`**************Önceki nonce: ${bnonce} şu an ${nonce}`);
+    console.log(`**************Önceki nonce: ${bnonce} şu an ${nonce} beklenilen sure ${delay}`);
     let gasPrice = await provider.getGasPrice();
     console.log(`gas: ${gasPrice}`);
     try {
@@ -68,8 +66,10 @@ async function get() {
       console.log(`HATA: ${error}`);
     }
 
-    await bekle(randomBekleme);
+ 
+
+await bekle(delay);
   }
-}
+  }
 
 get();
