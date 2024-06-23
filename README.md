@@ -49,7 +49,7 @@ go mod tidy
 nano ~/.rollup-env
 ```
 
-> İçerisine gerekli değişkenleri giriyoruz.
+> İçerisine gerekli değişkenleri giriyoruz ardından ctrl+x, y ve enter tuşlarına basarak çıkıyoruz.
 
 ```console
 # buradaki kod bloğunda değiştirmeniz bir yer yok.
@@ -96,7 +96,7 @@ sudo systemctl enable rolld
 sudo systemctl start rolld
 sudo journalctl -u rolld -f --no-hostname -o cat
 ```
-> Logların aktığını görmelisiniz. 
+> Logların aktığını görmelisiniz, ardından ctrl+c ile logları durduruyoruz.
 
 ![image](https://github.com/ruesandora/Airchains/assets/101149671/64137490-6b3b-4678-ae26-81c90dd1f952)
 
@@ -118,14 +118,14 @@ systemctl stop rolld
 ```
 nano ~/.evmosd/config/app.toml
 ```
+![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
 
-> Ayarı yaptıktan sonra kaydedip çıkalım ve nodu tekrar başlatalım.
+> Ayarı yaptıktan sonra ctrl+x, y ve enter ile kaydedip çıkalım ve nodu tekrar başlatalım.
 
 ```
 systemctl restart rolld
 ```
 
-![image](https://github.com/ruesandora/Airchains/assets/101149671/588a02d0-f7e3-4c25-ac25-ffff281206eb)
 
 
 > Böylece cosmos rpclerini public yapmayı öğrendiniz.
@@ -251,6 +251,7 @@ EOF
 ```
 
 ```console
+screen -S air
 sudo systemctl daemon-reload
 sudo systemctl enable stationd
 sudo systemctl restart stationd
