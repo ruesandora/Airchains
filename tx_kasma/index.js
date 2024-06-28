@@ -25,7 +25,11 @@ const contractABI = [
 
 const contractAddress = "KONTRAT_ADRESS";
 
+
+// Rastgele bekleme süresi belirleyen fonksiyon
 const bekle = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// Rastgele 5 ila 15 saniye arasında bekleme süresi belirleyen fonksiyon
+const randomBekleme = () => Math.floor(Math.random() * (15000 - 5000 + 1)) + 5000;
 
 async function get() {
   const provider = new ethers.providers.JsonRpcProvider("RPC");
@@ -41,7 +45,7 @@ async function get() {
     contractABI,
     walletsigner
   );
-
+  
   console.log(`${senderAccount.address} is ready. Please wait`);
   let bnonce = 0;
   while (true) {
@@ -64,7 +68,7 @@ async function get() {
       console.log(`HATA: ${error}`);
     }
 
-    await bekle(1000);
+    await bekle(randomBekleme);
   }
 }
 
