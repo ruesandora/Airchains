@@ -1,6 +1,10 @@
 <h1 align="center">İstasyon Otomatik Başlatma</h1>
 
-Airchain loglarının aktığı screen içinde bir dosya oluşturuyoruz.
+Airchain loglarının aktığı screen dışında yeni bir screen açıyoruz.
+```
+Screen -S rollback
+```
+Bu screen içerisinde yeni bir dosya oluşturuyoruz.
 ```
 nano check_log_and_fix.sh
 ```
@@ -9,39 +13,49 @@ Dosya içine  buradaki scipti kopyalayıp yapıştırıyoruz ve ctrl x+y ile kay
 ```
 #!/bin/bash
 
-# Log dosyası
-LOG_FILE="/path/to/your/log/file.log"
+# Define service name and log search strings
+service_name="stationd"
+error_patterns=(
+    "with gas used"
+    "ERR Error in SubmitPod Transaction Error="
+    "Failed to get transaction by hash: not found" 
+)
+restart_delay=180  # Restart delay in seconds (3 minutes)
 
-# Log akışının başarılı olup olmadığını kontrol eden fonksiyon
-check_log_flow() {
-    # Belirli bir kelime veya desen için log dosyasını kontrol edebilirsiniz
-    grep -q "Successfully generated  Unverified proof" "$LOG_FILE"
-}
+echo "Script started and it will rollback $service_name if needed..."
 
-# Log akışını kontrol et
-if ! check_log_flow; then
-    # Log akışı bozulmuşsa yapılacak işlemler
-    echo "Log akışı bozuldu, işlemler başlatılıyor..."
-    
-    # stationd servisini durdur
-    systemctl stop stationd
-    
-    # Servisin tamamen durduğundan emin ol
-    while systemctl is-active --quiet stationd; do
-        sleep 1
-    done
-    
-    # rollback işlemi
+while true; do
+  # Get the last 10 lines of service logs
+  logs=$(systemctl status "$service_name" --no-pager | tail -n 10)
+
+  # Check for error patterns in the logs
+  error_found=false
+  for pattern in "${error_patterns[@]}"; do
+    if [[ "$logs" =~ $pattern ]]; then
+      error_found=true
+      break
+    fi
+  done
+
+  # If an error pattern is found, perform rollback and restart
+  if $error_found; then
+    echo "Found error in logs, stopping $service_name..."
+    systemctl stop "$service_name"
+    cd ~/tracks
+
+    echo "Service $service_name stopped, starting rollback..."
     go run cmd/main.go rollback
-    
-    # stationd servisini yeniden başlat
-    sudo systemctl restart stationd
-    
-    # Log akışını takip et
-    sudo journalctl -u stationd -f --no-hostname -o cat
-else
-    echo "Log akışı normal, hiçbir işlem yapılmadı."
-fi
+    go run cmd/main.go rollback
+    go run cmd/main.go rollback
+    echo "Rollback completed, starting $service_name..."
+    systemctl start "$service_name"
+    echo "Service $service_name started"
+  fi
+
+  # Sleep for the restart delay
+  sleep "$restart_delay"
+done
+
 ```
 
 Daha sonra bu dosyaya izin vermek için
@@ -49,11 +63,11 @@ Daha sonra bu dosyaya izin vermek için
 chmod +x check_log_and_fix.sh
 ```
 
-Ve hata algıladığında otomatik rollback yapan scriptimizi başlatıyoruz.
+İzin verdikden sonra sciptimizi başlatabiliriz.
+
 ```
 ./check_log_and_fix.sh
 ```
+Airchain logları başka bir screende akarken bu açtığımız screen ise onu kontrol ederek benim tespit ettiğim 3 hatada otomatik rollback atacaktır.
 
-
-> UYARI : Her hata aldığında tek bir kere rollback atacaktır. Bu sayıyı isteyen dosyayı kaydetmeden rollback komutunu fazladan yazarak kendi ayarlayabilir . Ben kendim için %90 tek rollback ile çözdüğüm için 1 kere yazdım . Garantici olmak isteyenler 3 kere yazabilir.
 > NOT : Arada veren hatalar için tekrar başlatma yapmıyor.
