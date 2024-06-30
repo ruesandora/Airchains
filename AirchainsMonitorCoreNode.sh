@@ -24,21 +24,21 @@ display_banner() {
 
 echo "Starting Airchains Monitor..."
 
-echo "Stopping tracksd  service..."
-sudo systemctl stop tracksd 
+echo "Stopping tracksd service..."
+sudo systemctl stop tracksd
 
-echo "Waiting for tracksd  service to stop..."
-while sudo systemctl is-active --quiet tracksd ; do
+echo "Waiting for tracksd service to stop..."
+while sudo systemctl is-active --quiet tracksd; do
     sleep 5
 done
 
-echo "tracksd  service stopped. Running rollback commands..."
+echo "tracksd service stopped. Running rollback commands..."
 go run cmd/main.go rollback
 echo "Successfully ran rollback commands"
 
-echo "Restarting tracksd  service..."
-sudo systemctl restart tracksd 
-echo "Successfully restarted tracksd  service"
+echo "Restarting tracksd service..."
+sudo systemctl restart tracksd
+echo "Successfully restarted tracksd service"
 
 sudo journalctl --rotate > /dev/null 2>&1
 sudo journalctl --vacuum-time=1s > /dev/null 2>&1
@@ -110,22 +110,22 @@ handle_error() {
 
     echo "Successfully updated JunctionRPC from $old_rpc_endpoint to: $new_rpc_endpoint"
 
-    echo "Stopping tracksd  service..."
-    sudo systemctl stop tracksd 
+    echo "Stopping tracksd service..."
+    sudo systemctl stop tracksd
 
     
-    echo "Waiting for tracksd  service to stop..."
-    while sudo systemctl is-active --quiet tracksd ; do
+    echo "Waiting for tracksd service to stop..."
+    while sudo systemctl is-active --quiet tracksd; do
         sleep 5
     done
 
-    echo "tracksd  service stopped. Running rollback commands..."
+    echo "tracksd service stopped. Running rollback commands..."
 
     go run cmd/main.go rollback
     echo "Successfully ran rollback commands"
 
-    sudo systemctl restart tracksd 
-    echo "Successfully restarted tracksd  service"
+    sudo systemctl restart tracksd
+    echo "Successfully restarted tracksd service"
 
     clear
     
@@ -150,7 +150,7 @@ process_log_line() {
 
     local line="$1"
 
-    if [[ "$line" == tracksd .service:* ]]; then
+    if [[ "$line" == tracksd.service:* ]]; then
         return
     fi
     
@@ -176,7 +176,7 @@ process_log_line() {
     fi
 }
 
-if ! sudo journalctl -u tracksd  -f -n 0 --no-hostname -o cat; then
+if ! sudo journalctl -u tracksd -f -n 0 --no-hostname -o cat; then
     echo "Failed to read log. Exiting..."
     exit 1
 fi | while read -r line
