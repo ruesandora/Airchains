@@ -166,6 +166,7 @@ process_log_line() {
         handle_error "Failed to get transaction by hash: not found (occurred twice in last 5 lines)"
     elif echo "$line" | grep -q -F "Failed to Validate VRF" ||
          echo "$line" | grep -q -F "Failed to Init VRF" ||
+         echo "$line" | grep -q -F "Failed to Transact Verify pod" ||
          echo "$line" | grep -q -F "Client connection error: error while requesting node" ||
          echo "$line" | grep -q -F "Switchyard client connection error" ||
          echo "$line" | grep -q -F "error in json rpc client, with http response metadata:" ||
