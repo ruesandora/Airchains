@@ -123,8 +123,8 @@ handle_error() {
 
     go run cmd/main.go rollback
     echo "Successfully ran rollback commands"
-    sudo systemctl restart stationd
 
+    sudo systemctl restart stationd
     echo "Successfully restarted stationd service"
 
     clear
@@ -175,7 +175,7 @@ process_log_line() {
     fi
 }
 
-if ! sudo journalctl -u stationd -f --no-hostname -o cat; then
+if ! sudo journalctl -u stationd -f -n 0 --no-hostname -o cat; then
     echo "Failed to read log. Exiting..."
     exit 1
 fi | while read -r line
