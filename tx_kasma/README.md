@@ -49,7 +49,7 @@ npm init
 
 ```
 
-> index.js dosyasını oluştur. Bu repodaki index.js klasorunu düzelterek yapıştır. Şunları düzenle KONTRAT_ADRESS(26.satır), RPC(31.Satır), PRIVATE_KEY(33.satır). Ctrl+X Y sonra Enter ile kaydet.
+> index.js dosyasını oluştur. Bu repodaki index.js klasorunu düzelterek yapıştır. Şunları düzenle `KONTRAT ADRESİ(26.satır)`, `RPC(32.Satır)`, `PRIVATE_KEY(34.satır)`. Ctrl+X Y sonra Enter ile kaydet.
 
 ```
 
