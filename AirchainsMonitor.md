@@ -32,6 +32,12 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
     "https://airchains-testnet-rpc.cosmonautstakes.com/"
     "https://airchains-testnet-rpc.itrocket.net/"
 
+
+## Nereye/Nasıl kurmalıyım? 
+
+- Özel olarak bir klasöre girmenize gerek yok çalıştırmak için istediğiniz yerde çalıştırabilirsiniz.
+- Hali hazırda tx kasmak için elinizde 1 ya da 2 screen vardır onların yanına bir üçüncüsünü (ya da ikincisini) ekleyin yeterli başka bir screen de tekrardan airchain çalıştırmanıza gerek yok. 
+
 ## Oto Kurulum
 
 ### **Bu kurulum yöntemi link üzerinden script çalıştırdığı için güvenlik riski taşımaktadır. Linkteki dosyanın sizden habersiz değiştirilmesi ile cüzdan bilgileriniz çalınabilir. Güvenip güvenmemek size kalmış.**
