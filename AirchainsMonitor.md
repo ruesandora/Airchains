@@ -44,7 +44,7 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 
 1. Aşağıdaki komutu yazın direkt çalışacaktır.
    ```
-   curl -sL1 https://gist.githubusercontent.com/Dwtexe/74cecaf5023858b0f1fe0966d9fb51b5/raw/AirchainsMonitor.sh | bash
+   curl -sL1 https://raw.githubusercontent.com/Dwtexe/Airchains-MonitorAddon/main/AirchainsMonitor.sh | bash
    ```
 
 ## Manuel Kurulum
