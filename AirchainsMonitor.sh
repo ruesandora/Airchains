@@ -57,8 +57,8 @@ display_banner
 
 RPC_ENDPOINTS=(
     "https://airchains-rpc.sbgid.com/"
-	"https://airchains-rpc.tws.im/" 
-	"https://junction-testnet-rpc.synergynodes.com/" 
+	"https://airchains-rpc.tws.im/"
+    "https://junction-testnet-rpc.synergynodes.com/" 
     "https://airchains-testnet-rpc.nodesrun.xyz/"
     "https://t-airchains.rpc.utsa.tech/"
     "https://airchains-testnet.rpc.stakevillage.net/"
