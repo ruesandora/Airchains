@@ -18,7 +18,9 @@ service_name="stationd"
 error_patterns=(
     "with gas used"
     "ERR Error in SubmitPod Transaction Error="
-    "Failed to get transaction by hash: not found" 
+    "Failed to get transaction by hash: not found"
+    "Switchyard client connection error"
+    "Failed to Init VRF" 
 )
 restart_delay=180  # Restart delay in seconds (3 minutes)
 
