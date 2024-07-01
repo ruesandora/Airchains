@@ -2,7 +2,7 @@
 
 Airchain loglarının aktığı screen dışında yeni bir screen açıyoruz.
 ```
-Screen -S rollback
+screen -S rollback
 ```
 Bu screen içerisinde yeni bir dosya oluşturuyoruz.
 ```
