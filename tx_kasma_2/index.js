@@ -4,8 +4,8 @@ const {
     ADDRESS_RECEIVER,
     GAS_LIMIT,
     PRIVATE_KEY,
-    ETH_RPC_URL
-    MAX_WAIT_TIME
+    ETH_RPC_URL,
+    MAX_WAIT_TIME,
     MIN_WAIT_TIME
 } = process.env;
 
