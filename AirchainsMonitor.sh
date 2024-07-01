@@ -150,7 +150,9 @@ process_log_line() {
 
     local line="$1"
 
-    if [[ "$line" == stationd.service:* ]]; then
+    if [[ "$line" == *stationd.service:* ]]; then
+        return
+    elif [[ "$line" == *DBG* ]]; then
         return
     fi
     
