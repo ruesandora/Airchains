@@ -5,6 +5,8 @@ const {
     GAS_LIMIT,
     PRIVATE_KEY,
     ETH_RPC_URL
+    MAX_WAIT_SECOND
+    MIN_WAIT_SECOND
 } = process.env;
 
 const provider = new ethers.providers.JsonRpcProvider(ETH_RPC_URL);
@@ -45,7 +47,7 @@ const bot = async () => {
                 });
                 console.log(`Transfer Başarılı --> Cüzdan bakiyesi: ${ethers.utils.formatEther(await provider.getBalance(target.address))}`);
                 
-                const randomDelay = Math.floor(Math.random() * 12000) + 6000; // 0 ile 9000 ms (6 ile 12 saniye) arasında rastgele bir sayı
+                const randomDelay = Math.floor(Math.random() * MAX_WAIT_SECOND) + MIN_WAIT_SECOND;
                 console.log(`Bekleme süresi: ${randomDelay} ms`);
                 await new Promise(resolve => setTimeout(resolve, randomDelay)); // Rastgele bekleme süresi
             } catch (error) {
