@@ -12,6 +12,8 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 
 ## Oto Kurulum
 
+###**Bu kurulum yöntemi link üzerinden script çalıştırdığı için güvenlik riski taşımaktadır. Linkteki dosyanın sizden habersiz değiştirilmeai ile cüzdan bilgileriniz çalınabilir. Güvenip güvenmemek size kalmış.**
+
 1. Aşağıdaki komutu yazın direkt çalışacaktır.
    ```
    curl -sL1 https://gist.githubusercontent.com/Dwtexe/74cecaf5023858b0f1fe0966d9fb51b5/raw/AirchainsMonitor.sh | bash
