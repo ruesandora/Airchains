@@ -57,6 +57,8 @@ display_banner
 
 RPC_ENDPOINTS=(
     "https://airchains-rpc.sbgid.com/"
+	"https://airchains-rpc.tws.im/" 
+	"https://junction-testnet-rpc.synergynodes.com/" 
     "https://airchains-testnet-rpc.nodesrun.xyz/"
     "https://t-airchains.rpc.utsa.tech/"
     "https://airchains-testnet.rpc.stakevillage.net/"
@@ -172,6 +174,7 @@ process_log_line() {
          echo "$line" | grep -q -F "Client connection error: error while requesting node" ||
          echo "$line" | grep -q -F "Switchyard client connection error" ||
          echo "$line" | grep -q -F "error in json rpc client, with http response metadata:" ||
+		 echo "$line" | grep -q -F "failed to execute message; message index: 0" ||
          echo "$line" | grep -q -F "rpc error: code = Unknown desc = rpc error: code = Unknown desc = failed to execute message" ||
          echo "$line" | grep -q -F "error code: '13' msg: 'insufficient fees"; then
         handle_error "$line"
