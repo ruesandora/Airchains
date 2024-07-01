@@ -5,8 +5,8 @@ const {
     GAS_LIMIT,
     PRIVATE_KEY,
     ETH_RPC_URL
-    MAX_WAIT_SECOND
-    MIN_WAIT_SECOND
+    MAX_WAIT_TIME
+    MIN_WAIT_TIME
 } = process.env;
 
 const provider = new ethers.providers.JsonRpcProvider(ETH_RPC_URL);
