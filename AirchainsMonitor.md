@@ -8,7 +8,29 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 - Yaygın hataların tespiti ve ele alınması
 - Birden fazla RPC uç noktası arasında dinamik geçiş
 - `stationd` servisinin otomatik geri alınması ve yeniden başlatılması
-- Renkli ve bilgilendirici konsol çıktısı
+
+## Eklediğim RPC linkleri
+    "https://airchains-rpc.sbgid.com/"
+    "https://airchains-rpc.tws.im/"
+    "https://junction-testnet-rpc.synergynodes.com/" 
+    "https://airchains-testnet-rpc.nodesrun.xyz/"
+    "https://t-airchains.rpc.utsa.tech/"
+    "https://airchains-testnet.rpc.stakevillage.net/"
+    "https://airchains-rpc.elessarnodes.xyz/"
+    "https://rpc.airchains.aknodes.net"
+    "https://rpcair.aznope.com/"
+    "https://rpc1.airchains.t.cosmostaking.com/"
+    "https://rpc.nodejumper.io/airchainstestnet"
+    "https://airchains-testnet-rpc.staketab.org"
+    "https://junction-rpc.kzvn.xyz/"
+    "https://airchains-rpc-testnet.zulnaaa.com/"
+    "https://airchains-testnet-rpc.suntzu.dev/"
+    "https://airchains-testnet-rpc.nodesphere.net/"
+    "https://junction-rpc.validatorvn.com/"
+    "https://rpc-testnet-airchains.nodeist.net/"
+    "https://airchains-rpc.kubenode.xyz/"
+    "https://airchains-testnet-rpc.cosmonautstakes.com/"
+    "https://airchains-testnet-rpc.itrocket.net/"
 
 ## Oto Kurulum
 
