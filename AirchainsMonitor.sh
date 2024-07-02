@@ -1,6 +1,21 @@
 #!/bin/bash
 clear
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;94m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
+
+cecho() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
 check_and_install_packages() {
     local packages=("figlet" "lolcat")
     for package in "${packages[@]}"; do
@@ -12,48 +27,16 @@ check_and_install_packages() {
 }
 
 display_banner() {
+    clear
     figlet -c "AirchainsMonitor" | lolcat -f
     echo
-    echo -e "\e[1;32m📡 Monitoring Airchains Network\e[0m"
-    echo -e "\e[1;36m👨‍💻 Created by: @dwtexe\e[0m"
-    echo -e "\e[1;33m💰 Donate: air1dksx7yskxthlycnhvkvxs8c452f9eus5cxh6t5\e[0m"
+    cecho "$GREEN" "📡 Monitoring Airchains Network"
+    cecho "$CYAN" "👨‍💻 Created by: @dwtexe"
+    cecho "$BLUE" "💰 Donate: air1dksx7yskxthlycnhvkvxs8c452f9eus5cxh6t5"
     echo
-    echo -e "\e[1;35m🔍 Actively watching for network issues...\e[0m"
+    cecho "$MAGENTA" "🔍 Actively watching for network issues..."
     echo
 }
-
-echo "Starting Airchains Monitor..."
-
-echo "Stopping stationd service..."
-sudo systemctl stop stationd
-
-echo "Waiting for stationd service to stop..."
-while sudo systemctl is-active --quiet stationd; do
-    sleep 5
-done
-
-echo "Stationd service stopped. Running rollback commands..."
-go run cmd/main.go rollback
-echo "Successfully ran rollback commands"
-
-echo "Restarting stationd service..."
-sudo systemctl restart stationd
-echo "Successfully restarted stationd service"
-
-sudo journalctl --rotate > /dev/null 2>&1
-sudo journalctl --vacuum-time=1s > /dev/null 2>&1
-sudo find /var/log/journal -name "*.journal" | xargs sudo rm
-sudo systemctl restart systemd-journald > /dev/null 2>&1
-sleep 5
-
-check_and_install_packages
-
-
-clear
-sleep 1
-clear
-display_banner
-
 
 RPC_ENDPOINTS=(
     "https://airchains-rpc.sbgid.com/"
@@ -79,14 +62,32 @@ RPC_ENDPOINTS=(
     "https://airchains-testnet-rpc.itrocket.net/"
 )
 
-
 declare -a LAST_5_LINES=()
+
+wait_for_database_init() {
+    cecho "$YELLOW" "Waiting for database initialization..."
+	echo
+    while IFS= read -r line; do
+        if [[ "$line" == *"Database Initialized"* ]]; then
+            echo "$line"
+            cecho "$GREEN" "Database initialized. Starting log monitoring..."
+            break
+        fi
+    done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
+}
 
 handle_error() {
     local error_message="$1"
-    echo "***********************************************************************"
-    echo "===> Error detected: $error_message"
-    echo "Taking action to resolve the issue..."
+    cecho "$RED" "***********************************************************************"
+	echo
+    cecho "$RED" "===> Error Detected <==="
+    cecho "$YELLOW" "=> Taking action to resolve the issue..."
+	sleep 0.2
+	cecho "$CYAN" "*"
+	sleep 0.2
+	cecho "$BLUE" "*"
+	sleep 0.2
+	cecho "$MAGENTA" "*"
 
     local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
 
@@ -110,53 +111,55 @@ handle_error() {
 
     sed -i "s|JunctionRPC = \".*\"|JunctionRPC = \"$new_rpc_endpoint\"|" ~/.tracks/config/sequencer.toml
 
-    echo "Successfully updated JunctionRPC from $old_rpc_endpoint to: $new_rpc_endpoint"
+    cecho "$GREEN" "=> Successfully updated JunctionRPC from $old_rpc_endpoint to: $new_rpc_endpoint"
 
-    echo "Stopping stationd service..."
-    sudo systemctl stop stationd
+    cecho "$YELLOW" "=> Stopping stationd service..."
+	cecho "$YELLOW" "=> Waiting for stationd service to stop..."
+    sudo systemctl stop stationd > /dev/null 2>&1
 
-    
-    echo "Waiting for stationd service to stop..."
-    while sudo systemctl is-active --quiet stationd; do
-        sleep 5
-    done
-
-    echo "Stationd service stopped. Running rollback commands..."
+    cecho "$YELLOW" "=> Stationd service stopped. Running rollback commands..."
 
     go run cmd/main.go rollback
-    echo "Successfully ran rollback commands"
+    cecho "$GREEN" "=> Successfully ran rollback commands"
 
-    sudo systemctl restart stationd
-    echo "Successfully restarted stationd service"
-
-    clear
-    
+    cecho "$CYAN" "=> Removing old logs"
     sudo journalctl --rotate > /dev/null 2>&1
     sudo journalctl --vacuum-time=1s > /dev/null 2>&1
     sudo find /var/log/journal -name "*.journal" | xargs sudo rm
     sudo systemctl restart systemd-journald > /dev/null 2>&1
-    sleep 10
-    clear
-    sudo journalctl --rotate > /dev/null 2>&1
-    sudo journalctl --vacuum-time=1s > /dev/null 2>&1
-    sudo find /var/log/journal -name "*.journal" | xargs sudo rm
-    sudo systemctl restart systemd-journald > /dev/null 2>&1
-    sleep 5
+
+    cecho "$YELLOW" "=> Restarting stationd service..."
+    sudo systemctl restart stationd > /dev/null 2>&1
+    cecho "$GREEN" "=> Successfully restarted stationd service"
+
     clear
 
     display_banner
     LAST_5_LINES=()
+
+    wait_for_database_init
 }
 
 process_log_line() {
-
     local line="$1"
 
-    if [[ "$line" == *stationd.service:* ]]; then
+
+    if [[ "$line" == *stationd.service:* ]] || 
+       [[ "$line" == *DBG* ]] || 
+       [[ "$line" == *"compiling circuit"* ]] ||
+       [[ "$line" == *"parsed circuit inputs"* ]] ||
+       [[ "$line" == *"building constraint builder"* ]] ||
+       [[ "$line" == *"VRF Initiated Successfully"* ]] ||
+       [[ "$line" == *"Eigen DA Blob KEY:"* ]] ||
+       [[ "$line" == *"Pod submitted successfully"* ]] ||
+	   [[ "$line" == *"VRF Validated Tx Success"* ]] ||
+	   [[ "$line" == *"Generating proof"* ]] ||
+       [[ "$line" == *"Pod Verification Tx Success"* ]]; then
         return
-    elif [[ "$line" == *DBG* ]]; then
-        return
-    fi
+	elif [[ "$line" == *"Generating New unverified pods"* ]]; then
+		cecho "$BLUE" "=***=***=***=***=***=***=***="
+	fi
+	
     
     echo "$line"
 
@@ -181,8 +184,35 @@ process_log_line() {
     fi
 }
 
+cecho "$CYAN" "Starting Airchains Monitor..."
+
+check_and_install_packages
+
+cecho "$YELLOW" "Stopping stationd service..."
+cecho "$YELLOW" "Waiting for stationd service to stop..."
+sudo systemctl stop stationd > /dev/null 2>&1
+
+
+cecho "$YELLOW" "Stationd service stopped. Running rollback commands..."
+go run cmd/main.go rollback
+cecho "$GREEN" "Successfully ran rollback commands"
+
+cecho "$CYAN" "Removing old logs"
+sudo journalctl --rotate > /dev/null 2>&1
+sudo journalctl --vacuum-time=1s > /dev/null 2>&1
+sudo find /var/log/journal -name "*.journal" | xargs sudo rm
+sudo systemctl restart systemd-journald > /dev/null 2>&1
+
+cecho "$YELLOW" "Restarting stationd service..."
+sudo systemctl restart stationd > /dev/null 2>&1
+cecho "$GREEN" "Successfully restarted stationd service"
+
+display_banner
+
+wait_for_database_init
+
 if ! sudo journalctl -u stationd -f -n 0 --no-hostname -o cat; then
-    echo "Failed to read log. Exiting..."
+    cecho "$RED" "Failed to read log. Exiting..."
     exit 1
 fi | while read -r line
 do
