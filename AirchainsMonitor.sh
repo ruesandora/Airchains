@@ -78,15 +78,15 @@ wait_for_database_init() {
 
 handle_error() {
     cecho "$RED" "***********************************************************************"
-	echo
+    echo
     cecho "$RED" "===> Error Detected <==="
     cecho "$YELLOW" "=> Taking action to resolve the issue..."
-	sleep 0.2
-	cecho "$CYAN" "*"
-	sleep 0.2
-	cecho "$BLUE" "*"
-	sleep 0.2
-	cecho "$MAGENTA" "*"
+    sleep 0.2
+    cecho "$CYAN" "*"
+    sleep 0.2
+    cecho "$BLUE" "*"
+    sleep 0.2
+    cecho "$MAGENTA" "*"
 
     local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
 
@@ -113,25 +113,25 @@ handle_error() {
     cecho "$GREEN" "=> Successfully updated JunctionRPC from $old_rpc_endpoint to: $new_rpc_endpoint"
 
     cecho "$YELLOW" "=> Stopping stationd service..."
-	cecho "$YELLOW" "=> Waiting for stationd service to stop..."
+    cecho "$YELLOW" "=> Waiting for stationd service to stop..."
     sudo systemctl stop stationd > /dev/null 2>&1
 
     cecho "$YELLOW" "=> Stationd service stopped. Running rollback commands..."
 
-	if ! go run cmd/main.go rollback; then
-		cecho  "$RED" "Failed to rollback. Exiting..."
-		cecho  "$RED" "Run this script on the tracks/ folder."
-		exit 1
-	fi
-	if ! go run cmd/main.go rollback; then
-		cecho  "$RED" "Failed to rollback. Exiting..."
-		cecho  "$RED" "Run this script on the tracks/ folder."
-		exit 1
-	fi
+    if ! go run cmd/main.go rollback; then
+        cecho  "$RED" "Failed to rollback. Exiting..."
+        cecho  "$RED" "Run this script on the tracks/ folder."
+        exit 1
+    fi
+    if ! go run cmd/main.go rollback; then
+        cecho  "$RED" "Failed to rollback. Exiting..."
+        cecho  "$RED" "Run this script on the tracks/ folder."
+        exit 1
+    fi
     cecho "$GREEN" "=> Successfully ran rollback commands"
-	cecho "$YELLOW" "Restarting stationd service..."
-	sudo systemctl restart stationd > /dev/null 2>&1
-	cecho "$GREEN" "Successfully restarted stationd service"
+    cecho "$YELLOW" "Restarting stationd service..."
+    sudo systemctl restart stationd > /dev/null 2>&1
+    cecho "$GREEN" "Successfully restarted stationd service"
 
     cecho "$CYAN" "=> Removing old logs"
     sudo journalctl --rotate > /dev/null 2>&1
