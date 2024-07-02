@@ -132,6 +132,16 @@ handle_error() {
         cecho  "$RED" "Run this script on the tracks/ folder."
         exit 1
     fi
+    if ! go run cmd/main.go rollback; then
+        cecho  "$RED" "Failed to rollback. Exiting..."
+        cecho  "$RED" "Run this script on the tracks/ folder."
+        exit 1
+    fi
+    if ! go run cmd/main.go rollback; then
+        cecho  "$RED" "Failed to rollback. Exiting..."
+        cecho  "$RED" "Run this script on the tracks/ folder."
+        exit 1
+    fi
     cecho "$GREEN" "=> Successfully ran rollback commands"
     cecho "$YELLOW" "Restarting stationd service..."
     sudo systemctl restart stationd > /dev/null 2>&1
@@ -196,9 +206,12 @@ process_log_line() {
     elif [[ "$line" == *"failed to execute message"* ]]; then
         local timestamp=$(echo "$line" | awk '{print $1}')
         echo "${timestamp} Error in SubmitPod Transaction Error=\"rpc error: failed to execute message; invalid request\""
-    elif [[ "$line" == *"Error in SubmitPod Transaction Error="* && "$line" == *"error in json rpc client"* ]]; then
+    elif [[ "$line" == *"Error in SubmitPod Transaction"* && "$line" == *"error in json rpc client"* ]]; then
         local timestamp=$(echo "$line" | awk '{print $1}')
         echo "${timestamp} Error in SubmitPod Transaction Error=\"error in json rpc client\""
+    elif [[ "$line" == *"Error in VerifyPod transaction"* && "$line" == *"error in json rpc client"* ]]; then
+        local timestamp=$(echo "$line" | awk '{print $1}')
+        echo "${timestamp} Error in VerifyPod transaction Error=\"error in json rpc client\""
     else
         echo "$line"
     fi
