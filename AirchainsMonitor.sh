@@ -119,6 +119,7 @@ handle_error() {
     cecho "$YELLOW" "=> Stationd service stopped. Running rollback commands..."
 
     go run cmd/main.go rollback
+	go run cmd/main.go rollback
     cecho "$GREEN" "=> Successfully ran rollback commands"
 
     cecho "$CYAN" "=> Removing old logs"
