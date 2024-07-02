@@ -65,12 +65,11 @@ RPC_ENDPOINTS=(
 declare -a LAST_5_LINES=()
 
 wait_for_database_init() {
-    cecho "$YELLOW" "Waiting for database initialization..."
+    cecho "$YELLOW" "Waiting for database initialization and RPC server start..."
     echo
     while IFS= read -r line; do
         if [[ "$line" == *"Database Initialized"* ]]; then
             echo "$line"
-            cecho "$GREEN" "Database initialized."
             break
         fi
     done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
@@ -78,7 +77,9 @@ wait_for_database_init() {
     while IFS= read -r line; do
         if [[ "$line" == *"RPC Server Stared"* ]]; then
             echo "$line"
-            cecho "$GREEN" "RPC Server Started. Starting log monitoring..."
+			echo
+            cecho "$GREEN" "Database initialized and RPC server started. Starting log monitoring..."
+			echo
             break
         fi
     done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
@@ -195,6 +196,9 @@ process_log_line() {
     elif [[ "$line" == *"failed to execute message"* ]]; then
         local timestamp=$(echo "$line" | awk '{print $1}')
         echo "${timestamp} Error in SubmitPod Transaction Error=\"rpc error: failed to execute message; invalid request\""
+    elif [[ "$line" == *"Error in SubmitPod Transaction Error="* && "$line" == *"error in json rpc client"* ]]; then
+        local timestamp=$(echo "$line" | awk '{print $1}')
+        echo "${timestamp} Error in SubmitPod Transaction Error=\"error in json rpc client\""
     else
         echo "$line"
     fi
