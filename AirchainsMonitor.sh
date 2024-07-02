@@ -157,7 +157,9 @@ process_log_line() {
        [[ "$line" == *"Pod Verification Tx Success"* ]]; then
         return
 	elif [[ "$line" == *"Generating New unverified pods"* ]]; then
+		echo
 		cecho "$BLUE" "=***=***=***=***=***=***=***="
+		echo
 	fi
 	
     
