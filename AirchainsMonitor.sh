@@ -118,9 +118,18 @@ handle_error() {
 
     cecho "$YELLOW" "=> Stationd service stopped. Running rollback commands..."
 
-    go run cmd/main.go rollback
-	go run cmd/main.go rollback
+	if ! go run cmd/main.go rollback; then
+		cecho  "$RED" "Failed to rollback. Exiting..."
+		cecho  "$RED" "Run this script on the tracks/ folder."
+		exit 1
+	if ! go run cmd/main.go rollback; then
+		cecho  "$RED" "Failed to rollback. Exiting..."
+		cecho  "$RED" "Run this script on the tracks/ folder."
+		exit 1
     cecho "$GREEN" "=> Successfully ran rollback commands"
+	cecho "$YELLOW" "Restarting stationd service..."
+	sudo systemctl restart stationd > /dev/null 2>&1
+	cecho "$GREEN" "Successfully restarted stationd service"
 
     cecho "$CYAN" "=> Removing old logs"
     sudo journalctl --rotate > /dev/null 2>&1
@@ -168,7 +177,19 @@ process_log_line() {
         local error_type=$(echo "$line" | sed -n 's/.*ERR Error in \(.*\) Error=.*/\1/p')
         local expected=$(echo "$line" | sed -n 's/.*expected \([0-9]*\).*/\1/p')
         local got=$(echo "$line" | sed -n 's/.*got \([0-9]*\).*/\1/p')
-        echo "${timestamp} ERR Error in ${error_type} Error=\"account sequence mismatch, expected ${expected}, got ${got}: incorrect account sequence\""
+        echo "${timestamp} Error in ${error_type} Error=\"account sequence mismatch, expected ${expected}, got ${got}: incorrect account sequence\""
+	elif [[ "$line" == *"Error in InitVRF transaction Error="* && "$line" == *"waiting for next block: error while requesting node"* ]]; then
+		local timestamp=$(echo "$line" | awk '{print $1}')
+		local url=$(echo "$line" | sed -n "s/.*requesting node '\([^']*\)'.*/\1/p")
+		echo "${timestamp} Error in InitVRF transaction Error=\"waiting for next block: error while requesting node '${url}'\""
+	elif [[ "$line" == *"Error in"* && "$line" == *"insufficient fees"* ]]; then
+        local timestamp=$(echo "$line" | awk '{print $1}')
+        local error_type=$(echo "$line" | sed -n 's/.*ERR Error in \(.*\) Error=.*/\1/p')
+        local fees=$(echo "$line" | sed -n 's/.*insufficient fees; got: \([^;]*\) required: \([^:]*\).*/got: \1 required: \2/p')
+        echo "${timestamp} Error in ${error_type} Error=\"insufficient fees; ${fees}:\""
+	elif [[ "$line" == *"ERR Error in SubmitPod Transaction Error="* && "$line" == *"rpc error:"* && "$line" == *"failed to execute message"* ]]; then
+        local timestamp=$(echo "$line" | awk '{print $1}')
+        echo "${timestamp} Error in SubmitPod Transaction Error=\"rpc error: failed to execute message; invalid request\""
     else
         echo "$line"
     fi
@@ -209,8 +230,15 @@ sudo systemctl stop stationd > /dev/null 2>&1
 
 
 cecho "$YELLOW" "Stationd service stopped. Running rollback commands..."
-go run cmd/main.go rollback
+if ! go run cmd/main.go rollback; then
+	cecho  "$RED" "Failed to rollback. Exiting..."
+	cecho  "$RED" "Run this script on the tracks/ folder."
+	exit 1
 cecho "$GREEN" "Successfully ran rollback commands"
+
+cecho "$YELLOW" "Restarting stationd service..."
+sudo systemctl restart stationd > /dev/null 2>&1
+cecho "$GREEN" "Successfully restarted stationd service"
 
 cecho "$CYAN" "Removing old logs"
 sudo journalctl --rotate > /dev/null 2>&1
