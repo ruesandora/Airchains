@@ -211,7 +211,6 @@ process_log_line() {
         echo "$line"
     fi
 
-    # Rest of your error handling logic...
     LAST_5_LINES+=("$line")
     if [ ${#LAST_5_LINES[@]} -gt 5 ]; then
         LAST_5_LINES=("${LAST_5_LINES[@]:1}")
