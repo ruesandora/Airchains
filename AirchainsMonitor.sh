@@ -77,7 +77,6 @@ wait_for_database_init() {
 }
 
 handle_error() {
-    local error_message="$1"
     cecho "$RED" "***********************************************************************"
 	echo
     cecho "$RED" "===> Error Detected <==="
@@ -143,7 +142,7 @@ handle_error() {
 process_log_line() {
     local line="$1"
 
-
+    # Filter out unwanted lines
     if [[ "$line" == *stationd.service:* ]] || 
        [[ "$line" == *DBG* ]] || 
        [[ "$line" == *"compiling circuit"* ]] ||
@@ -152,44 +151,49 @@ process_log_line() {
        [[ "$line" == *"VRF Initiated Successfully"* ]] ||
        [[ "$line" == *"Eigen DA Blob KEY:"* ]] ||
        [[ "$line" == *"Pod submitted successfully"* ]] ||
-	   [[ "$line" == *"VRF Validated Tx Success"* ]] ||
-	   [[ "$line" == *"Generating proof"* ]] ||
+       [[ "$line" == *"VRF Validated Tx Success"* ]] ||
+       [[ "$line" == *"Generating proof"* ]] ||
        [[ "$line" == *"Pod Verification Tx Success"* ]]; then
         return
-	elif [[ "$line" == *"Generating New unverified pods"* ]]; then
-		echo
-		cecho "$BLUE" "=***=***=***=***=***=***=***="
-		echo
-	fi
-	
-    local modified=$(echo "$line" | sed -E 's/^(.*Error=").*account sequence mismatch, expected ([0-9]+), got ([0-9]+): incorrect account sequence.*$/\1account sequence mismatch, expected \2, got \3: incorrect account sequence"/')
-    
-    if [[ "$line" != "$modified" ]]; then
-        echo "$modified"
-    else
-		echo "$line"
-	fi
-	
-	
-    LAST_5_LINES+=("$line")
+    elif [[ "$line" == *"Generating New unverified pods"* ]]; then
+        echo
+        cecho "$BLUE" "=***=***=***=***=***=***=***="
+        echo
+    fi
 
+    # Simplify error messages
+    if [[ "$line" == *"Error="* && "$line" == *"account sequence mismatch"* ]]; then
+        local timestamp=$(echo "$line" | awk '{print $1}')
+        local error_type=$(echo "$line" | sed -n 's/.*ERR Error in \(.*\) Error=.*/\1/p')
+        local expected=$(echo "$line" | sed -n 's/.*expected \([0-9]*\).*/\1/p')
+        local got=$(echo "$line" | sed -n 's/.*got \([0-9]*\).*/\1/p')
+        echo "${timestamp} ERR Error in ${error_type} Error=\"account sequence mismatch, expected ${expected}, got ${got}: incorrect account sequence\""
+    else
+        echo "$line"
+    fi
+
+    # Rest of your error handling logic...
+    LAST_5_LINES+=("$line")
     if [ ${#LAST_5_LINES[@]} -gt 5 ]; then
         LAST_5_LINES=("${LAST_5_LINES[@]:1}")
     fi
 
-    if [ $(echo "${LAST_5_LINES[@]}" | grep -o "Failed to get transaction by hash: not found" | wc -l) -ge 2 ]; then
-        handle_error "Failed to get transaction by hash: not found (occurred twice in last 5 lines)"
-    elif [ $(echo "${LAST_5_LINES[@]}" | grep -o "error code: '13' msg: 'insufficient fees" | wc -l) -ge 2 ]; then
-        handle_error "error code: '13' msg: 'insufficient fees (occurred twice in last 5 lines)"
-    elif [ $(echo "${LAST_5_LINES[@]}" | grep -o "message index: 0" | wc -l) -ge 2 ]; then
-        handle_error "failed to execute message; message index: 0 (occurred twice in last 5 lines)"
+    # Check for repeated errors in the last 5 lines
+    local insufficient_fees_count=$(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "error code: '13' msg: 'insufficient fees")
+    local message_index_count=$(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "message index: 0")
+
+    if [ $(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "Failed to get transaction by hash: not found") -ge 2 ]; then
+        handle_error 
+    elif [ $insufficient_fees_count -ge 2 ]; then
+        handle_error 
+    elif [ $message_index_count -ge 2 ]; then
+        handle_error
     elif echo "$line" | grep -q -F "Failed to Validate VRF" ||
          echo "$line" | grep -q -F "Failed to Init VRF" ||
          echo "$line" | grep -q -F "Failed to Transact Verify pod" ||
          echo "$line" | grep -q -F "Client connection error: error while requesting node" ||
          echo "$line" | grep -q -F "Switchyard client connection error" ||
-         echo "$line" | grep -q -F "error in json rpc client, with http response metadata:" ||
-         echo "$line" | grep -q -F "rpc error: code = Unknown desc = rpc error: code = Unknown desc = failed to execute message"; then
+         echo "$line" | grep -q -F "error in json rpc client, with http response metadata:"; then
         handle_error "$line"
     fi
 }
