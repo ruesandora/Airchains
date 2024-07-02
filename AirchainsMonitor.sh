@@ -122,10 +122,12 @@ handle_error() {
 		cecho  "$RED" "Failed to rollback. Exiting..."
 		cecho  "$RED" "Run this script on the tracks/ folder."
 		exit 1
+	fi
 	if ! go run cmd/main.go rollback; then
 		cecho  "$RED" "Failed to rollback. Exiting..."
 		cecho  "$RED" "Run this script on the tracks/ folder."
 		exit 1
+	fi
     cecho "$GREEN" "=> Successfully ran rollback commands"
 	cecho "$YELLOW" "Restarting stationd service..."
 	sudo systemctl restart stationd > /dev/null 2>&1
@@ -234,6 +236,7 @@ if ! go run cmd/main.go rollback; then
 	cecho  "$RED" "Failed to rollback. Exiting..."
 	cecho  "$RED" "Run this script on the tracks/ folder."
 	exit 1
+fi
 cecho "$GREEN" "Successfully ran rollback commands"
 
 cecho "$YELLOW" "Restarting stationd service..."
