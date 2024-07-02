@@ -35,7 +35,7 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 
 ## Nereye/Nasıl kurmalıyım? 
 
-- Özel olarak bir klasöre girmenize gerek yok çalıştırmak için istediğiniz yerde çalıştırabilirsiniz.
+- "tracks" klasörünün içine girip çalıştırmanız lazım
 - Hali hazırda tx kasmak için elinizde 1 ya da 2 screen vardır onların yanına bir üçüncüsünü (ya da ikincisini) ekleyin yeterli başka bir screen de tekrardan airchain çalıştırmanıza gerek yok. 
 
 ## Oto Kurulum
