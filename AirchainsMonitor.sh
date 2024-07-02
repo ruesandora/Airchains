@@ -15,6 +15,14 @@ declare -A colors=(
 # Configuration
 RPC_ENDPOINTS=(
     "https://airchains-rpc.sbgid.com/"
+    "https://junction-testnet-rpc.nodesync.top/"
+    "https://airchains.rpc.t.stavr.tech/"
+    "https://airchains-testnet-rpc.corenode.info/"
+    "https://airchains-testnet-rpc.spacestake.tech/"
+    "https://airchains-rpc.chainad.org/"
+    "https://rpc.airchains.stakeup.tech/"
+    "https://airchains-testnet-rpc.spacestake.tech/"
+    "https://airchains-testnet-rpc.stakerhouse.com/"
     "https://airchains-rpc.tws.im/"
     "https://junction-testnet-rpc.synergynodes.com/" 
     "https://airchains-testnet-rpc.nodesrun.xyz/"
