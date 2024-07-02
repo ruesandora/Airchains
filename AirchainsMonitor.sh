@@ -217,6 +217,10 @@ process_log_line() {
             local timestamp=$(echo "$line" | awk '{print $1}')
             echo "${timestamp} Error Request rate limited"
             ;;
+        *"Error in ValidateVRF transaction"*)
+            local timestamp=$(echo "$line" | awk '{print $1}')
+            echo "${timestamp} Error in ValidateVRF transaction Error=\"error in json rpc client\""
+            ;;
         *)
             echo "$line"
             ;;
