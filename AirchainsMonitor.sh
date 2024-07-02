@@ -66,11 +66,19 @@ declare -a LAST_5_LINES=()
 
 wait_for_database_init() {
     cecho "$YELLOW" "Waiting for database initialization..."
-	echo
+    echo
     while IFS= read -r line; do
         if [[ "$line" == *"Database Initialized"* ]]; then
             echo "$line"
-            cecho "$GREEN" "Database initialized. Starting log monitoring..."
+            cecho "$GREEN" "Database initialized."
+            break
+        fi
+    done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
+    
+    while IFS= read -r line; do
+        if [[ "$line" == *"RPC Server Stared"* ]]; then
+            echo "$line"
+            cecho "$GREEN" "RPC Server Started. Starting log monitoring..."
             break
         fi
     done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
@@ -118,11 +126,6 @@ handle_error() {
 
     cecho "$YELLOW" "=> Stationd service stopped. Running rollback commands..."
 
-    if ! go run cmd/main.go rollback; then
-        cecho  "$RED" "Failed to rollback. Exiting..."
-        cecho  "$RED" "Run this script on the tracks/ folder."
-        exit 1
-    fi
     if ! go run cmd/main.go rollback; then
         cecho  "$RED" "Failed to rollback. Exiting..."
         cecho  "$RED" "Run this script on the tracks/ folder."
@@ -180,16 +183,16 @@ process_log_line() {
         local expected=$(echo "$line" | sed -n 's/.*expected \([0-9]*\).*/\1/p')
         local got=$(echo "$line" | sed -n 's/.*got \([0-9]*\).*/\1/p')
         echo "${timestamp} Error in ${error_type} Error=\"account sequence mismatch, expected ${expected}, got ${got}: incorrect account sequence\""
-	elif [[ "$line" == *"Error in InitVRF transaction Error="* && "$line" == *"waiting for next block: error while requesting node"* ]]; then
-		local timestamp=$(echo "$line" | awk '{print $1}')
-		local url=$(echo "$line" | sed -n "s/.*requesting node '\([^']*\)'.*/\1/p")
-		echo "${timestamp} Error in InitVRF transaction Error=\"waiting for next block: error while requesting node '${url}'\""
-	elif [[ "$line" == *"Error in"* && "$line" == *"insufficient fees"* ]]; then
+    elif [[ "$line" == *"Error in InitVRF transaction Error="* && "$line" == *"waiting for next block: error while requesting node"* ]]; then
+        local timestamp=$(echo "$line" | awk '{print $1}')
+        local url=$(echo "$line" | sed -n "s/.*requesting node '\([^']*\)'.*/\1/p")
+        echo "${timestamp} Error in InitVRF transaction Error=\"waiting for next block: error while requesting node '${url}'\""
+    elif [[ "$line" == *"Error in"* && "$line" == *"insufficient fees"* ]]; then
         local timestamp=$(echo "$line" | awk '{print $1}')
         local error_type=$(echo "$line" | sed -n 's/.*ERR Error in \(.*\) Error=.*/\1/p')
         local fees=$(echo "$line" | sed -n 's/.*insufficient fees; got: \([^;]*\) required: \([^:]*\).*/got: \1 required: \2/p')
         echo "${timestamp} Error in ${error_type} Error=\"insufficient fees; ${fees}:\""
-	elif [[ "$line" == *"ERR Error in SubmitPod Transaction Error="* && "$line" == *"rpc error:"* && "$line" == *"failed to execute message"* ]]; then
+    elif [[ "$line" == *"failed to execute message"* ]]; then
         local timestamp=$(echo "$line" | awk '{print $1}')
         echo "${timestamp} Error in SubmitPod Transaction Error=\"rpc error: failed to execute message; invalid request\""
     else
@@ -230,12 +233,11 @@ cecho "$YELLOW" "Stopping stationd service..."
 cecho "$YELLOW" "Waiting for stationd service to stop..."
 sudo systemctl stop stationd > /dev/null 2>&1
 
-
 cecho "$YELLOW" "Stationd service stopped. Running rollback commands..."
 if ! go run cmd/main.go rollback; then
-	cecho  "$RED" "Failed to rollback. Exiting..."
-	cecho  "$RED" "Run this script on the tracks/ folder."
-	exit 1
+    cecho  "$RED" "Failed to rollback. Exiting..."
+    cecho  "$RED" "Run this script on the tracks/ folder."
+    exit 1
 fi
 cecho "$GREEN" "Successfully ran rollback commands"
 
