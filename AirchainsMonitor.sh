@@ -173,6 +173,8 @@ process_log_line() {
 
     if [ $(echo "${LAST_5_LINES[@]}" | grep -o "Failed to get transaction by hash: not found" | wc -l) -ge 2 ]; then
         handle_error "Failed to get transaction by hash: not found (occurred twice in last 5 lines)"
+    elif [ $(echo "${LAST_5_LINES[@]}" | grep -o "error code: '13' msg: 'insufficient fees" | wc -l) -ge 2 ]; then
+        handle_error "error code: '13' msg: 'insufficient fees (occurred twice in last 5 lines)"
     elif echo "$line" | grep -q -F "Failed to Validate VRF" ||
          echo "$line" | grep -q -F "Failed to Init VRF" ||
          echo "$line" | grep -q -F "Failed to Transact Verify pod" ||
@@ -180,8 +182,7 @@ process_log_line() {
          echo "$line" | grep -q -F "Switchyard client connection error" ||
          echo "$line" | grep -q -F "error in json rpc client, with http response metadata:" ||
          echo "$line" | grep -q -F "failed to execute message; message index: 0" ||
-         echo "$line" | grep -q -F "rpc error: code = Unknown desc = rpc error: code = Unknown desc = failed to execute message" ||
-         echo "$line" | grep -q -F "error code: '13' msg: 'insufficient fees"; then
+         echo "$line" | grep -q -F "rpc error: code = Unknown desc = rpc error: code = Unknown desc = failed to execute message"; then
         handle_error "$line"
     fi
 }
