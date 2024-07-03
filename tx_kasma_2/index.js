@@ -47,7 +47,7 @@ const bot = async () => {
                 });
                 console.log(`Transfer Başarılı --> Cüzdan bakiyesi: ${ethers.utils.formatEther(await provider.getBalance(target.address))}`);
                 
-                const randomDelay = Math.floor(Math.random() * MAX_WAIT_TIME) + MIN_WAIT_TIME;
+                const randomDelay = Math.floor(Math.random() * (MAX_WAIT_TIME - MIN_WAIT_TIME)) + Number(MIN_WAIT_TIME);
                 console.log(`Bekleme süresi: ${randomDelay} ms`);
                 await new Promise(resolve => setTimeout(resolve, randomDelay)); // Rastgele bekleme süresi
             } catch (error) {

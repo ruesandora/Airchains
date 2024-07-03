@@ -29,14 +29,14 @@ npm init
 
 ```
 
-> index.js dosyasını oluştur.  [Bu repodaki](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/index.js) index.js değişiklik yapmadan yapıştır.
+> index.js dosyasını oluştur.  [Bu repodaki](https://github.com/ruesandora/Airchains/blob/main/tx_kasma_2/index.js) index.js değişiklik yapmadan yapıştır.
 
 ```
 
 nano index.js
 
 ```
-> .env dosyasını oluştur.  [Bu repodaki](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/.env) buradaki bilgileri kendine göre düzenle.
+> .env dosyasını oluştur.  [Bu repodaki](https://github.com/ruesandora/Airchains/blob/main/tx_kasma_2/.env) buradaki bilgileri kendine göre düzenle.
 
 ```
 
@@ -44,7 +44,7 @@ nano .env
 
 ```
 
-> Aynısını [package.json](https://github.com/ErsanAydin/Airchains/blob/main/tx_kasma_2/package.json) için yap
+> Aynısını [package.json](https://github.com/ruesandora/Airchains/blob/main/tx_kasma_2/package.json) için yap
 
 ```
 
