@@ -46,7 +46,7 @@ async function get() {
   console.log(`${senderAccount.address} is ready. Please wait`);
   let bnonce = 0;
   while (true) {
-    const delay = Math.floor(Math.random() * (30000 - 10000 + 1)) + 10000;
+    const delay = Math.floor(Math.random() * (5000 - 10000 + 1)) + 2000;
     const nonce = await provider.getTransactionCount(senderAccount.address);
     console.log(`**************Önceki nonce: ${bnonce} şu an ${nonce} beklenilen sure ${delay}`);
     let gasPrice = await provider.getGasPrice();
