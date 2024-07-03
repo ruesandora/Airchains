@@ -46,6 +46,7 @@ RPC_ENDPOINTS=(
 )
 
 LAST_5_LINES=()
+LAST_20_LINES=()
 MAX_RETRIES=3
 RETRY_DELAY=5
 
@@ -105,7 +106,7 @@ handle_error() {
     echo
     cecho "RED" "===> Error Detected <==="
     cecho "YELLOW" "=> Taking action to resolve the issue..."
-    
+	
     local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
     local new_rpc_endpoint
 
@@ -131,18 +132,21 @@ handle_error() {
     clear
     display_banner
     LAST_5_LINES=()
+    LAST_20_LINES=()
 
     wait_for_database_init
 }
 
 restart_service() {
     cecho "YELLOW" "=> Stopping stationd service..."
+	systemctl stop stationd && go run cmd/main.go rollback && sudo systemctl restart stationd
+	sleep 20
     sudo systemctl stop stationd > /dev/null 2>&1
     cecho "YELLOW" "=> Running rollback commands..."
-
+	sleep 20
     local retry_count=0
     while [ $retry_count -lt $MAX_RETRIES ]; do
-        if go run cmd/main.go rollback && go run cmd/main.go rollback; then
+        if go run cmd/main.go rollback; then
             cecho "GREEN" "=> Successfully ran rollback commands"
             break
         else
@@ -157,13 +161,13 @@ restart_service() {
             fi
         fi
     done
-
+	sleep 10
     cecho "YELLOW" "=> Removing old logs"
     sudo journalctl --rotate > /dev/null 2>&1
     sudo journalctl --vacuum-time=1s > /dev/null 2>&1
     sudo find /var/log/journal -name "*.journal" | xargs sudo rm
     sudo systemctl restart systemd-journald > /dev/null 2>&1
-
+	sleep 10
     cecho "YELLOW" "=> Restarting stationd service..."
     sudo systemctl restart stationd > /dev/null 2>&1
     cecho "GREEN" "=> Successfully restarted stationd service"
@@ -230,15 +234,21 @@ process_log_line() {
     if [ ${#LAST_5_LINES[@]} -gt 5 ]; then
         LAST_5_LINES=("${LAST_5_LINES[@]:1}")
     fi
+    LAST_20_LINES+=("$line")
+    if [ ${#LAST_20_LINES[@]} -gt 20 ]; then
+        LAST_20_LINES=("${LAST_20_LINES[@]:1}")
+    fi
 
     # Check for repeated errors in the last 5 lines
-    local insufficient_fees_count=$(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "error code: '13' msg: 'insufficient fees")
-    local message_index_count=$(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "message index: 0")
+    local insufficient_fees_count=$(printf '%s\n' "${LAST_20_LINES[@]}" | grep -c "error code: '13' msg: 'insufficient fees")
+    local message_index_count=$(printf '%s\n' "${LAST_20_LINES[@]}" | grep -c "message index: 0")
+    local rpc_client_count=$(printf '%s\n' "${LAST_20_LINES[@]}" | grep -c "error in json rpc client")
 
     if [ $(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "Failed to get transaction by hash: not found") -ge 2 ] ||
-       [ $insufficient_fees_count -ge 2 ] ||
-       [ $message_index_count -ge 2 ] ||
-       [[ "$line" =~ "Failed to Validate VRF"|"Failed to Init VRF"|"Failed to Transact Verify pod"|"Client connection error: error while requesting node"|"Switchyard client connection error"|"error in json rpc client, with http response metadata:" ]]; then
+       [ $message_index_count -ge 5 ] ||
+       [ $insufficient_fees_count -ge 10 ] ||
+	   [ $rpc_client_count -ge 10 ] ||
+       [[ "$line" =~ "Failed to Validate VRF"|"Failed to Init VRF"|"Failed to Transact Verify pod"|"Client connection error: error while requesting node"|"Switchyard client connection error" ]]; then
         handle_error
     fi
 }
