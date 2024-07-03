@@ -139,7 +139,10 @@ handle_error() {
 
 restart_service() {
     cecho "YELLOW" "=> Stopping stationd service..."
-	systemctl stop stationd && go run cmd/main.go rollback && sudo systemctl restart stationd
+	sudo systemctl stop stationd
+	go run cmd/main.go rollback
+	sudo systemctl restart stationd
+	
 	sleep 20
     sudo systemctl stop stationd > /dev/null 2>&1
     cecho "YELLOW" "=> Running rollback commands..."
