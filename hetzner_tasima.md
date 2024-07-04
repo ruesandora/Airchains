@@ -1,4 +1,6 @@
-### ***Eğer hetzner kullanıyorsanız ve diskiniz dolduysa snapshot alarak bir üst sunucuya geçebilirsiniz.***
+### ***Dikkat. Bu işlem risklidir, airchains trackerin silindiğinde geri getirilemediğini bilerek işlem yapın. Sorumluluk size aittir.***
+
+### ***Eğer hetzner kullanıyorsanız ve diskiniz dolduysa snapshot alarak bir üst sunucuya geçebilirsiniz. İşlemlere aşina değilseniz dikkatli olun.***
 
 ### ***Servis kurulumlarını yaptıysanız otomatik olarak yeniden başlayacaktır.***
 
@@ -19,6 +21,7 @@
 ![image](https://github.com/neuweltgeld/Airchains_/assets/101174090/67ea917f-79a2-4dd1-9c51-f32ea62c254c)
 
 + Dikkat ! Snapshot işleminin bittiğinden emin olun yoksa her şeyiniz  gider.
++ %100 olduğunda sonraki adıma geçin.
 
 ![image](https://github.com/neuweltgeld/Airchains_/assets/101174090/433a646a-ae8e-4d11-9a79-1383a494cb19)
 
