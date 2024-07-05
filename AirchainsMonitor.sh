@@ -47,26 +47,6 @@ display_banner() {
     echo
 }
 
-wait_for_database_init() {
-    cecho "YELLOW" "Waiting for database initialization and RPC server start..."
-    echo
-    while IFS= read -r line; do
-        case "$line" in
-            *"Database Initialized"*)
-                sudo journalctl --vacuum-time=1s > /dev/null 2>&1
-                echo "$line"
-                ;;
-            *"RPC Server Stared"*)
-                echo "$line"
-                echo
-                cecho "GREEN" "Database initialized and RPC server started. Starting log monitoring..."
-                echo
-                return
-                ;;
-        esac
-    done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
-}
-
 restart_service() {
     cecho "YELLOW" "=> Stopping stationd service..."
     sudo systemctl stop stationd > /dev/null 2>&1
@@ -74,14 +54,14 @@ restart_service() {
     sudo systemctl daemon-reload
     sudo systemctl stop rolld
 
-    sleep 20
+    sleep 10
     sudo systemctl stop stationd > /dev/null 2>&1
     while sudo systemctl is-active --quiet stationd; do
         sleep 5
     done
     
     cecho "YELLOW" "=> Running rollback commands..."
-    sleep 20
+    sleep 10
     if go run cmd/main.go rollback && go run cmd/main.go rollback; then
         cecho "GREEN" "=> Successfully ran rollback commands"
     else
@@ -89,18 +69,17 @@ restart_service() {
         exit 1
     fi
 
-    sleep 10
+    sleep 5
     cecho "YELLOW" "=> Removing old logs"
     sudo journalctl --rotate > /dev/null 2>&1
     sudo journalctl --vacuum-time=1s > /dev/null 2>&1
     sudo find /var/log/journal -name "*.journal" | xargs sudo rm -rf
     sudo systemctl restart systemd-journald > /dev/null 2>&1
-    sleep 10
+    sleep 5
     
     cecho "YELLOW" "=> Restarting stationd service..."
     sudo systemctl restart rolld
     sudo systemctl daemon-reload
-    sudo systemctl enable stationd
     sudo systemctl restart stationd > /dev/null 2>&1
     cecho "GREEN" "=> Successfully restarted stationd service"
     
@@ -182,8 +161,6 @@ main() {
     restart_service
 
     display_banner
-
-    wait_for_database_init
 
     sudo journalctl -u stationd -f -n 0 --no-hostname -o cat | while read -r line
     do
