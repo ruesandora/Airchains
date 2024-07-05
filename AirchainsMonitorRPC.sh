@@ -142,11 +142,6 @@ restart_service() {
 }
 
 changeRPC() {
-    cecho "RED" "***********************************************************************"
-    echo
-    cecho "RED" "===> Error Detected <==="
-    cecho "YELLOW" "=> Taking action to resolve the issue..."
-    
     local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
     local new_rpc_endpoint
 
