@@ -45,10 +45,8 @@ RPC_ENDPOINTS=(
     "https://airchains-testnet-rpc.itrocket.net/"
 )
 
-LAST_5_LINES=()
-LAST_20_LINES=()
-MAX_RETRIES=3
-RETRY_DELAY=5
+# Global variable to store the last restart time
+LAST_RESTART_TIME=$(date +%s)
 
 # Function definitions
 
@@ -88,6 +86,7 @@ wait_for_database_init() {
     while IFS= read -r line; do
         case "$line" in
             *"Database Initialized"*)
+                sudo journalctl --vacuum-time=1s > /dev/null 2>&1
                 echo "$line"
                 ;;
             *"RPC Server Stared"*)
@@ -101,12 +100,53 @@ wait_for_database_init() {
     done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
 }
 
-handle_error() {
+restart_service() {
+    cecho "YELLOW" "=> Stopping stationd service..."
+    sudo systemctl stop stationd > /dev/null 2>&1
+    sudo systemctl restart stationd > /dev/null 2>&1
+    sudo systemctl daemon-reload
+    sudo systemctl stop rolld
+
+    sleep 20
+    sudo systemctl stop stationd > /dev/null 2>&1
+    while sudo systemctl is-active --quiet stationd; do
+        sleep 5
+    done
+    
+    cecho "YELLOW" "=> Running rollback commands..."
+    sleep 20
+    if go run cmd/main.go rollback && go run cmd/main.go rollback; then
+        cecho "GREEN" "=> Successfully ran rollback commands"
+    else
+        cecho "RED" "Run this script in the tracks/ folder."
+        exit 1
+    fi
+
+    sleep 10
+    cecho "YELLOW" "=> Removing old logs"
+    sudo journalctl --rotate > /dev/null 2>&1
+    sudo journalctl --vacuum-time=1s > /dev/null 2>&1
+    sudo find /var/log/journal -name "*.journal" | xargs sudo rm -rf
+    sudo systemctl restart systemd-journald > /dev/null 2>&1
+    sleep 10
+    
+    cecho "YELLOW" "=> Restarting stationd service..."
+    sudo systemctl restart rolld
+    sudo systemctl daemon-reload
+    sudo systemctl enable stationd
+    sudo systemctl restart stationd > /dev/null 2>&1
+    cecho "GREEN" "=> Successfully restarted stationd service"
+    
+    # Update the last restart time
+    LAST_RESTART_TIME=$(date +%s)
+}
+
+changeRPC() {
     cecho "RED" "***********************************************************************"
     echo
     cecho "RED" "===> Error Detected <==="
     cecho "YELLOW" "=> Taking action to resolve the issue..."
-	
+    
     local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
     local new_rpc_endpoint
 
@@ -131,53 +171,18 @@ handle_error() {
 
     clear
     display_banner
-    LAST_5_LINES=()
-    LAST_20_LINES=()
-
     wait_for_database_init
-}
-
-restart_service() {
-    cecho "YELLOW" "=> Stopping stationd service..."
-	sudo systemctl stop stationd
-	go run cmd/main.go rollback
-	sudo systemctl restart stationd
-	
-	sleep 20
-    sudo systemctl stop stationd > /dev/null 2>&1
-    cecho "YELLOW" "=> Running rollback commands..."
-	sleep 20
-    local retry_count=0
-    while [ $retry_count -lt $MAX_RETRIES ]; do
-        if go run cmd/main.go rollback; then
-            cecho "GREEN" "=> Successfully ran rollback commands"
-            break
-        else
-            retry_count=$((retry_count + 1))
-            if [ $retry_count -lt $MAX_RETRIES ]; then
-                cecho "YELLOW" "Rollback failed. Retrying in $RETRY_DELAY seconds..."
-                sleep $RETRY_DELAY
-            else
-                cecho "RED" "Failed to rollback after $MAX_RETRIES attempts. Exiting..."
-                cecho "RED" "Run this script in the tracks/ folder."
-                exit 1
-            fi
-        fi
-    done
-	sleep 10
-    cecho "YELLOW" "=> Removing old logs"
-    sudo journalctl --rotate > /dev/null 2>&1
-    sudo journalctl --vacuum-time=1s > /dev/null 2>&1
-    sudo find /var/log/journal -name "*.journal" | xargs sudo rm
-    sudo systemctl restart systemd-journald > /dev/null 2>&1
-	sleep 10
-    cecho "YELLOW" "=> Restarting stationd service..."
-    sudo systemctl restart stationd > /dev/null 2>&1
-    cecho "GREEN" "=> Successfully restarted stationd service"
 }
 
 process_log_line() {
     local line="$1"
+
+    # Check if an hour has passed since the last restart
+    local current_time=$(date +%s)
+    if (( current_time - LAST_RESTART_TIME >= 3600 )); then
+        cecho "YELLOW" "An hour has passed. Restarting service..."
+        changeRPC
+    fi
 
     # Filter out unwanted lines
     if [[ "$line" =~ stationd\.service:|DBG|"compiling circuit"|"parsed circuit inputs"|"building constraint builder"|"VRF Initiated Successfully"|"Eigen DA Blob KEY:"|"Pod submitted successfully"|"VRF Validated Tx Success"|"Generating proof"|"Pod Verification Tx Success" ]]; then
@@ -232,39 +237,17 @@ process_log_line() {
             echo "$line"
             ;;
     esac
-
-    LAST_5_LINES+=("$line")
-    if [ ${#LAST_5_LINES[@]} -gt 5 ]; then
-        LAST_5_LINES=("${LAST_5_LINES[@]:1}")
-    fi
-    LAST_20_LINES+=("$line")
-    if [ ${#LAST_20_LINES[@]} -gt 20 ]; then
-        LAST_20_LINES=("${LAST_20_LINES[@]:1}")
-    fi
-
-    # Check for repeated errors in the last 5 lines
-    local insufficient_fees_count=$(printf '%s\n' "${LAST_20_LINES[@]}" | grep -c "error code: '13' msg: 'insufficient fees")
-    local message_index_count=$(printf '%s\n' "${LAST_20_LINES[@]}" | grep -c "message index: 0")
-    local rpc_client_count=$(printf '%s\n' "${LAST_20_LINES[@]}" | grep -c "error in json rpc client")
-
-    if [ $(printf '%s\n' "${LAST_5_LINES[@]}" | grep -c "Failed to get transaction by hash: not found") -ge 2 ] ||
-       [ $message_index_count -ge 5 ] ||
-       [ $insufficient_fees_count -ge 10 ] ||
-	   [ $rpc_client_count -ge 10 ] ||
-       [[ "$line" =~ "Failed to Validate VRF"|"Failed to Init VRF"|"Failed to Transact Verify pod"|"Client connection error: error while requesting node"|"Switchyard client connection error" ]]; then
-        handle_error
-    fi
 }
 
 main() {
-	clear
+    clear
     cecho "CYAN" "Starting Airchains Monitor..."
 
     check_and_install_packages
 
-    restart_service
-
-    display_banner
+    changeRPC
+    
+	display_banner
 
     wait_for_database_init
 
