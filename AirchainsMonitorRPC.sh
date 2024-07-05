@@ -12,38 +12,9 @@ declare -A colors=(
     ["NC"]='\033[0m' # No Color
 )
 
-# Configuration
-RPC_ENDPOINTS=(
-    "https://airchains-rpc.sbgid.com/"
-    "https://junction-testnet-rpc.nodesync.top/"
-    "https://airchains.rpc.t.stavr.tech/"
-    "https://airchains-testnet-rpc.corenode.info/"
-    "https://airchains-testnet-rpc.spacestake.tech/"
-    "https://airchains-rpc.chainad.org/"
-    "https://rpc.airchains.stakeup.tech/"
-    "https://airchains-testnet-rpc.spacestake.tech/"
-    "https://airchains-testnet-rpc.stakerhouse.com/"
-    "https://airchains-rpc.tws.im/"
-    "https://junction-testnet-rpc.synergynodes.com/" 
-    "https://airchains-testnet-rpc.nodesrun.xyz/"
-    "https://t-airchains.rpc.utsa.tech/"
-    "https://airchains-testnet.rpc.stakevillage.net/"
-    "https://airchains-rpc.elessarnodes.xyz/"
-    "https://rpc.airchains.aknodes.net"
-    "https://rpcair.aznope.com/"
-    "https://rpc1.airchains.t.cosmostaking.com/"
-    "https://rpc.nodejumper.io/airchainstestnet"
-    "https://airchains-testnet-rpc.staketab.org"
-    "https://junction-rpc.kzvn.xyz/"
-    "https://airchains-testnet-rpc.zulnaaa.com/"
-    "https://airchains-testnet-rpc.suntzu.dev/"
-    "https://airchains-testnet-rpc.nodesphere.net/"
-    "https://junction-rpc.validatorvn.com/"
-    "https://rpc-testnet-airchains.nodeist.net/"
-    "https://airchains-rpc.kubenode.xyz/"
-    "https://airchains-testnet-rpc.cosmonautstakes.com/"
-    "https://airchains-testnet-rpc.itrocket.net/"
-)
+# URLs of the JSON files
+URL1="https://testnet-files.bonynode.online/airchains/.rpc_combined.json"
+URL2="https://api.nodejumper.io/api/v1/airchainstestnet/rpcs"
 
 # Global variable to store the last restart time
 LAST_RESTART_TIME=$(date +%s)
@@ -57,7 +28,7 @@ cecho() {
 }
 
 check_and_install_packages() {
-    local packages=("figlet" "lolcat")
+    local packages=("figlet" "lolcat" "jq" "curl")
     for package in "${packages[@]}"; do
         if ! command -v "$package" &> /dev/null; then
             cecho "YELLOW" "Installing $package..."
@@ -98,6 +69,42 @@ wait_for_database_init() {
                 ;;
         esac
     done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
+}
+
+fetch_and_filter_rpcs() {
+    # Fetch and combine data from both URLs
+    combined_ips=$(
+        (curl -s "$URL1" | jq -r 'to_entries[] | select(.value.tx_index == "on") | .key';
+         curl -s "$URL2" | jq -r '.[] | select(.tx_index == true) | .ip') | sort | uniq
+    )
+
+    # Process combined and deduplicated IPs
+    cecho "YELLOW" "Fetching and filtering RPC endpoints..."
+    RPC_ENDPOINTS=()
+    while read -r ip; do
+        # Extract IP and port
+        ip_addr=$(echo $ip | cut -d':' -f1)
+        port=$(echo $ip | cut -d':' -f2)
+        
+        # Check if SSL is supported (timeout after 5 seconds)
+        if timeout 5 openssl s_client -connect ${ip_addr}:${port} </dev/null &>/dev/null; then
+            protocol="https"
+        else
+            protocol="http"
+        fi
+
+        # Check if the site is accessible
+        status_code=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${protocol}://${ip})
+        
+        if [ "$status_code" -ge 200 ] && [ "$status_code" -lt 400 ]; then
+            RPC_ENDPOINTS+=("${protocol}://${ip}")
+            cecho "GREEN" "Added ${protocol}://${ip} (Status: ${status_code})"
+        else
+            cecho "RED" "${ip} is not accessible (Status: ${status_code})"
+        fi
+    done <<< "$combined_ips"
+
+    cecho "GREEN" "Total unique RPC endpoints added: ${#RPC_ENDPOINTS[@]}"
 }
 
 restart_service() {
@@ -144,7 +151,9 @@ restart_service() {
 changeRPC() {
     local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
     local new_rpc_endpoint
-
+	
+	fetch_and_filter_rpcs
+	
     # Find the index of the current RPC endpoint and select the next one
     for i in "${!RPC_ENDPOINTS[@]}"; do
         if [[ "${RPC_ENDPOINTS[$i]}" == "$old_rpc_endpoint" ]]; then
@@ -165,6 +174,7 @@ changeRPC() {
     restart_service
 
     clear
+	
     display_banner
     wait_for_database_init
 }
@@ -239,7 +249,7 @@ main() {
     cecho "CYAN" "Starting Airchains Monitor..."
 
     check_and_install_packages
-
+    
     changeRPC
     
     display_banner
