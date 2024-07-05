@@ -28,7 +28,7 @@ cecho() {
 }
 
 check_and_install_packages() {
-    local packages=("figlet" "lolcat" "jq" "curl")
+    local packages=("figlet" "lolcat" "jq" "curl" "bc")
     for package in "${packages[@]}"; do
         if ! command -v "$package" &> /dev/null; then
             cecho "YELLOW" "Installing $package..."
@@ -51,25 +51,6 @@ display_banner() {
     echo
 }
 
-wait_for_database_init() {
-    cecho "YELLOW" "Waiting for database initialization and RPC server start..."
-    echo
-    while IFS= read -r line; do
-        case "$line" in
-            *"Database Initialized"*)
-                sudo journalctl --vacuum-time=1s > /dev/null 2>&1
-                echo "$line"
-                ;;
-            *"RPC Server Stared"*)
-                echo "$line"
-                echo
-                cecho "GREEN" "Database initialized and RPC server started. Starting log monitoring..."
-                echo
-                return
-                ;;
-        esac
-    done < <(sudo journalctl -u stationd -f -n 0 --no-hostname -o cat)
-}
 
 fetch_and_filter_rpcs() {
     # Fetch and combine data from both URLs
@@ -80,7 +61,7 @@ fetch_and_filter_rpcs() {
 
     # Process combined and deduplicated IPs
     cecho "YELLOW" "Fetching and filtering RPC endpoints..."
-    RPC_ENDPOINTS=()
+    declare -A rpc_response_times
     while read -r ip; do
         # Extract IP and port
         ip_addr=$(echo $ip | cut -d':' -f1)
@@ -93,18 +74,26 @@ fetch_and_filter_rpcs() {
             protocol="http"
         fi
 
-        # Check if the site is accessible
+        # Check if the site is accessible and measure response time
+        start_time=$(date +%s.%N)
         status_code=$(curl -s -o /dev/null -w "%{http_code}" -m 10 ${protocol}://${ip})
+        end_time=$(date +%s.%N)
+        response_time=$(echo "$end_time - $start_time" | bc)
         
         if [ "$status_code" -ge 200 ] && [ "$status_code" -lt 400 ]; then
-            RPC_ENDPOINTS+=("${protocol}://${ip}")
-            cecho "GREEN" "Added ${protocol}://${ip} (Status: ${status_code})"
+            rpc_response_times["${protocol}://${ip}"]=$response_time
         else
-            cecho "RED" "${ip} is not accessible (Status: ${status_code})"
+            echo
         fi
     done <<< "$combined_ips"
 
-    cecho "GREEN" "Total unique RPC endpoints added: ${#RPC_ENDPOINTS[@]}"
+    # Sort RPC endpoints by response time and get the fastest one
+    fastest_rpc=$(for rpc in "${!rpc_response_times[@]}"; do
+        echo "${rpc_response_times[$rpc]} $rpc"
+    done | sort -n | head -n 1 | cut -d' ' -f2-)
+
+    RPC_ENDPOINTS=("$fastest_rpc")
+    cecho "GREEN" "Fastest RPC endpoint: ${RPC_ENDPOINTS[0]}"
 }
 
 restart_service() {
@@ -114,14 +103,14 @@ restart_service() {
     sudo systemctl daemon-reload
     sudo systemctl stop rolld
 
-    sleep 20
+    sleep 10
     sudo systemctl stop stationd > /dev/null 2>&1
     while sudo systemctl is-active --quiet stationd; do
         sleep 5
     done
     
     cecho "YELLOW" "=> Running rollback commands..."
-    sleep 20
+    sleep 10
     if go run cmd/main.go rollback && go run cmd/main.go rollback; then
         cecho "GREEN" "=> Successfully ran rollback commands"
     else
@@ -129,18 +118,17 @@ restart_service() {
         exit 1
     fi
 
-    sleep 10
+    sleep 5
     cecho "YELLOW" "=> Removing old logs"
     sudo journalctl --rotate > /dev/null 2>&1
     sudo journalctl --vacuum-time=1s > /dev/null 2>&1
     sudo find /var/log/journal -name "*.journal" | xargs sudo rm -rf
     sudo systemctl restart systemd-journald > /dev/null 2>&1
-    sleep 10
+    sleep 5
     
     cecho "YELLOW" "=> Restarting stationd service..."
     sudo systemctl restart rolld
     sudo systemctl daemon-reload
-    sudo systemctl enable stationd
     sudo systemctl restart stationd > /dev/null 2>&1
     cecho "GREEN" "=> Successfully restarted stationd service"
     
@@ -149,24 +137,11 @@ restart_service() {
 }
 
 changeRPC() {
-    local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
-    local new_rpc_endpoint
-	
 	fetch_and_filter_rpcs
 	
-    # Find the index of the current RPC endpoint and select the next one
-    for i in "${!RPC_ENDPOINTS[@]}"; do
-        if [[ "${RPC_ENDPOINTS[$i]}" == "$old_rpc_endpoint" ]]; then
-            new_rpc_endpoint="${RPC_ENDPOINTS[$(( (i + 1) % ${#RPC_ENDPOINTS[@]} ))]}"
-            break
-        fi
-    done
-
-    # If the current endpoint wasn't found, use the first one
-    if [[ -z "$new_rpc_endpoint" ]]; then
-        new_rpc_endpoint="${RPC_ENDPOINTS[0]}"
-    fi
-
+    local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
+    local new_rpc_endpoint="${RPC_ENDPOINTS[0]}"  # Always use the fastest RPC
+	
     sed -i "s|JunctionRPC = \".*\"|JunctionRPC = \"$new_rpc_endpoint\"|" ~/.tracks/config/sequencer.toml
 
     cecho "GREEN" "=> Successfully updated JunctionRPC from $old_rpc_endpoint to: $new_rpc_endpoint"
@@ -174,9 +149,7 @@ changeRPC() {
     restart_service
 
     clear
-	
     display_banner
-    wait_for_database_init
 }
 
 process_log_line() {
@@ -253,8 +226,6 @@ main() {
     changeRPC
     
     display_banner
-
-    wait_for_database_init
 
     sudo journalctl -u stationd -f -n 0 --no-hostname -o cat | while read -r line
     do
