@@ -6,6 +6,8 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 ## 2 Farklı versyion?
 -  `Airchainsmonitor.sh` bu versiyon rpc değiştirmiyor sadece saatlik rollback yapıyor.
 -  `AirchainsmonitorRPC.sh` bu versiyon saatlik olarak hem rpc değiştiriyor hem de rollback atıyor.
+-  Benim tavsiyem sağlam olduğuna inandığınız bir RPC yi ekleyin sunucunuza ardından da sadece rollback yapan versiyonu kullanın.
+  Ama RPC ye güveniyorsanız yapın bunu.
 
 ## Özellikler
 
