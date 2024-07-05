@@ -2,6 +2,11 @@
 
 AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak için tasarlanmış bir Bash betiğidir. Airchains doğrulayıcıları için otomatik hata algılama, RPC uç noktası değiştirme ve sistem bakımı sağlar.
 
+
+## 2 Farklı versyion?
+-  `Airchainsmonitor.sh` bu versiyon rpc değiştirmiyor sadece saatlik rollback yapıyor.
+-  `AirchainsmonitorRPC.sh` bu versiyon saatlik olarak hem rpc değiştiriyor hem de rollback atıyor.
+
 ## Özellikler
 
 - Airchains ağının otomatik izlenmesi

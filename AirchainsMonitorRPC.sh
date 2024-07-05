@@ -12,6 +12,39 @@ declare -A colors=(
     ["NC"]='\033[0m' # No Color
 )
 
+# Configuration
+RPC_ENDPOINTS=(
+    "https://airchains-rpc.sbgid.com/"
+    "https://junction-testnet-rpc.nodesync.top/"
+    "https://airchains.rpc.t.stavr.tech/"
+    "https://airchains-testnet-rpc.corenode.info/"
+    "https://airchains-testnet-rpc.spacestake.tech/"
+    "https://airchains-rpc.chainad.org/"
+    "https://rpc.airchains.stakeup.tech/"
+    "https://airchains-testnet-rpc.spacestake.tech/"
+    "https://airchains-testnet-rpc.stakerhouse.com/"
+    "https://airchains-rpc.tws.im/"
+    "https://junction-testnet-rpc.synergynodes.com/" 
+    "https://airchains-testnet-rpc.nodesrun.xyz/"
+    "https://t-airchains.rpc.utsa.tech/"
+    "https://airchains-testnet.rpc.stakevillage.net/"
+    "https://airchains-rpc.elessarnodes.xyz/"
+    "https://rpc.airchains.aknodes.net"
+    "https://rpcair.aznope.com/"
+    "https://rpc1.airchains.t.cosmostaking.com/"
+    "https://rpc.nodejumper.io/airchainstestnet"
+    "https://airchains-testnet-rpc.staketab.org"
+    "https://junction-rpc.kzvn.xyz/"
+    "https://airchains-testnet-rpc.zulnaaa.com/"
+    "https://airchains-testnet-rpc.suntzu.dev/"
+    "https://airchains-testnet-rpc.nodesphere.net/"
+    "https://junction-rpc.validatorvn.com/"
+    "https://rpc-testnet-airchains.nodeist.net/"
+    "https://airchains-rpc.kubenode.xyz/"
+    "https://airchains-testnet-rpc.cosmonautstakes.com/"
+    "https://airchains-testnet-rpc.itrocket.net/"
+)
+
 # Global variable to store the last restart time
 LAST_RESTART_TIME=$(date +%s)
 
@@ -108,6 +141,34 @@ restart_service() {
     LAST_RESTART_TIME=$(date +%s)
 }
 
+changeRPC() {
+    local old_rpc_endpoint=$(grep 'JunctionRPC' ~/.tracks/config/sequencer.toml | cut -d'"' -f2)
+    local new_rpc_endpoint
+
+    # Find the index of the current RPC endpoint and select the next one
+    for i in "${!RPC_ENDPOINTS[@]}"; do
+        if [[ "${RPC_ENDPOINTS[$i]}" == "$old_rpc_endpoint" ]]; then
+            new_rpc_endpoint="${RPC_ENDPOINTS[$(( (i + 1) % ${#RPC_ENDPOINTS[@]} ))]}"
+            break
+        fi
+    done
+
+    # If the current endpoint wasn't found, use the first one
+    if [[ -z "$new_rpc_endpoint" ]]; then
+        new_rpc_endpoint="${RPC_ENDPOINTS[0]}"
+    fi
+
+    sed -i "s|JunctionRPC = \".*\"|JunctionRPC = \"$new_rpc_endpoint\"|" ~/.tracks/config/sequencer.toml
+
+    cecho "GREEN" "=> Successfully updated JunctionRPC from $old_rpc_endpoint to: $new_rpc_endpoint"
+
+    restart_service
+
+    clear
+    display_banner
+    wait_for_database_init
+}
+
 process_log_line() {
     local line="$1"
 
@@ -115,7 +176,7 @@ process_log_line() {
     local current_time=$(date +%s)
     if (( current_time - LAST_RESTART_TIME >= 3600 )); then
         cecho "YELLOW" "An hour has passed. Restarting service..."
-        restart_service
+        changeRPC
     fi
 
     # Filter out unwanted lines
@@ -179,8 +240,8 @@ main() {
 
     check_and_install_packages
 
-    restart_service
-
+    changeRPC
+    
     display_banner
 
     wait_for_database_init
