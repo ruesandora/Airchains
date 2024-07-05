@@ -15,28 +15,10 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 - `stationd` servisinin otomatik geri alınması ve yeniden başlatılması
 
 ## Eklediğim RPC linkleri
-    "https://airchains-rpc.sbgid.com/"
-    "https://airchains-rpc.tws.im/"
-    "https://junction-testnet-rpc.synergynodes.com/" 
-    "https://airchains-testnet-rpc.nodesrun.xyz/"
-    "https://t-airchains.rpc.utsa.tech/"
-    "https://airchains-testnet.rpc.stakevillage.net/"
-    "https://airchains-rpc.elessarnodes.xyz/"
-    "https://rpc.airchains.aknodes.net"
-    "https://rpcair.aznope.com/"
-    "https://rpc1.airchains.t.cosmostaking.com/"
-    "https://rpc.nodejumper.io/airchainstestnet"
-    "https://airchains-testnet-rpc.staketab.org"
-    "https://junction-rpc.kzvn.xyz/"
-    "https://airchains-rpc-testnet.zulnaaa.com/"
-    "https://airchains-testnet-rpc.suntzu.dev/"
-    "https://airchains-testnet-rpc.nodesphere.net/"
-    "https://junction-rpc.validatorvn.com/"
-    "https://rpc-testnet-airchains.nodeist.net/"
-    "https://airchains-rpc.kubenode.xyz/"
-    "https://airchains-testnet-rpc.cosmonautstakes.com/"
-    "https://airchains-testnet-rpc.itrocket.net/"
-
+- RPC linklerini artık 
+    URL1="https://testnet-files.bonynode.online/airchains/.rpc_combined.json"
+    URL2="https://api.nodejumper.io/api/v1/airchainstestnet/rpcs"
+  bu iki linkten çekip en hızlısını kullanacak şekilde ayarladım.
 
 ## Nereye/Nasıl kurmalıyım? 
 
@@ -51,6 +33,11 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
    ```
    curl -sL1 https://raw.githubusercontent.com/Dwtexe/Airchains-MonitorAddon/main/AirchainsMonitor.sh | bash
    ```
+2. Otomatik rpc değişsin istiyorsanız:
+   ```
+   curl -sL1 https://raw.githubusercontent.com/Dwtexe/Airchains-MonitorAddon/main/AirchainsMonitorRPC.sh | bash
+   ```
+
 
 ## Manuel Kurulum
 
@@ -58,10 +45,10 @@ AirchainsMonitor, Airchains ağ düğümünü izlemek ve bakımını yapmak içi
 2. `cd tracks/` yazıp dizine girelim.
 3. `nano AirchainsMonitor.sh` yazarak dosya oluşturalım.
 4. Repodaki `AirchainsMonitor.sh` dosyasını kopyalayayıp yapıştıralım.
+    ==> 160. satırdan ne kadar sürede bir restart atmasını istediğinizi ayarlayabilirsiniz. (varsayılan olarak saatte 1 kere atıyor)
 5. `CTRL + X` tuşlarına basıp `Y` tuşuna basarak kaydedelim.
 6. `chmod +x AirchainsMonitor.sh` yazarak dosyayı kullanılabilir hale getirelim.
 7. Son yazılan kodu `./AirchainsMonitor.sh` ile çalıştırabilirsiniz.
-
 ```
 ./AirchainsMonitor.sh
 ```
