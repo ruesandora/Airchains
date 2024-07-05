@@ -242,7 +242,7 @@ main() {
 
     changeRPC
     
-	display_banner
+    display_banner
 
     wait_for_database_init
 
