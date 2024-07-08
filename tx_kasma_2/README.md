@@ -61,3 +61,17 @@ node index.js
 ```
 
 > Sıkıntı çıkmazsa Transefer Başarılı!! -->CÜZDAN BAKİYESİ
+
+> 2. 3. 4. cüzdandan ana cüzdana transfer işlemi
+
+```
+screen -ls
+screen -X -S <index.js nin çalıştığı screen kodu> quit
+
+```
+Metamask üzerinden 2. 3. 4. cüzdanlara tEVMOS gönderin.
+
+```
+nano .env
+
+```
