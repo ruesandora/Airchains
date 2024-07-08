@@ -69,9 +69,25 @@ screen -ls
 screen -X -S <index.js nin çalıştığı screen kodu> quit
 
 ```
-Metamask üzerinden 2. 3. 4. cüzdanlara tEVMOS gönderin.
+
+Metamask üzerinden 2, 3, 4. cüzdanlara tEVMOS gönderin.
 
 ```
 nano .env
 
 ```
+> bu repodaki güncel .env dosyasını kendinize göre düzenleyin. ctrl x+y enter. Aynı işlemleri index2.js index3.js index4.js için aşağıdaki kodları tekrar ederek yapın.
+
+```
+nano index2.js
+screen -S tx
+node index.js
+ctrl a+d
+screen -S tx2
+node index2.js
+ctrl a+d
+
+```
+
+> Burada eğer 3 ve 4. tx atmayı da yapacaksanız PKEY3 ve PKEY4 değerlerini .env dosyasına girip, index3.js içinde PKEY2 yazan yeri PKEY3, index4.js içinde PKEY4 yazmalısınız.
+> BU şekilde dakikada 1 pod, saatte 60 pod ve günde yaklaşık 1400 pod'a kadar işlem yapılabiliyor.
