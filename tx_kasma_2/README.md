@@ -62,6 +62,8 @@ node index.js
 
 > Sıkıntı çıkmazsa Transefer Başarılı!! -->CÜZDAN BAKİYESİ
 
+> Buradan sonrası 2 ve daha fazla tx i aynı anda gönderme işlemleri içindir.
+
 > 2  cüzdandan ana cüzdana transfer işlemi
 
 ```
@@ -70,7 +72,7 @@ screen -X -S <index.js nin çalıştığı screen kodu> quit
 
 ```
 
-Metamask üzerinden 2, 3, 4 cüzdanlara tEVMOS gönderin.
+> Metamask üzerinden ikinci, üçüncü, dördüncü cüzdanlara tEVMOS gönderin.
 
 ```
 nano .env
@@ -81,13 +83,9 @@ nano .env
 ```
 nano index2.js
 screen -S tx
-node index.js
-ctrl a+d
-screen -S tx2
 node index2.js
-ctrl a+d
 
 ```
 
 > Burada eğer 3 ve 4. tx atmayı da yapacaksanız PKEY3 ve PKEY4 değerlerini .env dosyasına girip, index3.js içinde PKEY2 yazan yeri PKEY3, index4.js içinde PKEY4 yazmalısınız.
-> BU şekilde dakikada 1 pod, saatte 60 pod ve günde yaklaşık 1400 pod'a kadar işlem yapılabiliyor.
+
