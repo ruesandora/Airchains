@@ -3,6 +3,8 @@
 > UYARI : [Remix](https://remix.ethereum.org/) üzerinden bir dosya oluştur. Aşağıdaki kodu yapıştır.
 > İlk önce compile et. Sonra Deploy&Run Transactions kısmına gir `Environment` kısmından `Injected Provider-Metamask` seç ve deploy et.
 > Aşağıdaki bölümden kontrat adresini not et.
+> Deploy ettiğiniz zaman rpc hatası alırsanız 2.tx botunu durdurun sürekli tx attığı için hata veriyor daha sonra sorunsuz şekilde devam edebilirsiniz.
+
 
 ```
 // SPDX-License-Identifier: MIT
@@ -72,7 +74,6 @@ npm install
 node index.js
 
 ```
-
 > Herşey doğru ise Stored Data sürekli aratacak.
 
 <h1 align="center">Screen ile Arkaplanda Çalıştırmaya Devam Etme</h1>
