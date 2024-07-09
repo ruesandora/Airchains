@@ -21,6 +21,7 @@ error_patterns=(
     "Failed to get transaction by hash: not found"
     "Switchyard client connection error"
     "Failed to Init VRF" 
+    "Failed to Transact Verify pod"
 )
 restart_delay=180  # Restart delay in seconds (3 minutes)
 
