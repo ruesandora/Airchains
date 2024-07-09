@@ -61,3 +61,31 @@ node index.js
 ```
 
 > Sıkıntı çıkmazsa Transefer Başarılı!! -->CÜZDAN BAKİYESİ
+
+> Buradan sonrası 2 ve daha fazla tx i aynı anda gönderme işlemleri içindir.
+
+> 2  cüzdandan ana cüzdana transfer işlemi
+
+```
+screen -ls
+screen -X -S <index.js nin çalıştığı screen kodu> quit
+
+```
+
+> Metamask üzerinden ikinci, üçüncü, dördüncü cüzdanlara tEVMOS gönderin.
+
+```
+nano .env
+
+```
+> bu repodaki güncel .env dosyasını kendinize göre düzenleyin. ctrl x+y Enter. Aynı işlemleri index2.js index3.js index4.js için aşağıdaki kodları tekrar ederek yapın.
+
+```
+nano index2.js
+screen -S tx
+node index2.js
+
+```
+
+> Burada eğer 3 ve 4. tx atmayı da yapacaksanız PKEY3 ve PKEY4 değerlerini .env dosyasına girip, index3.js içinde PKEY2 yazan yeri PKEY3, index4.js içinde PKEY4 yazmalısınız.
+
