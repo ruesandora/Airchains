@@ -1,4 +1,4 @@
-<h3 align="center">Gereksiz Temp Temizleme</h3>
+<h1 align="center">Gereksiz Temp Temizleme</h1>
 
 
 > UYARI : Bunu kullanmak herkesin kendi mesuliyetindedir.
