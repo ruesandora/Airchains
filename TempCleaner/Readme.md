@@ -1,4 +1,4 @@
-<h2 align="center">Gereksiz Temp Temizleme</h2>
+<h3 align="center">Gereksiz Temp Temizleme</h3>
 
 
 > UYARI : Bunu kullanmak herkesin kendi mesuliyetindedir.
@@ -7,7 +7,7 @@ Bu yöntem ile tx botlarının oluşturduğu gereksiz temp dosyalarını silerek
 
 > 80gb dolmuş sunucuda denediğimde 64gb gereksiz dosya silindi. 
 
-<h1 align="center">Kurulum</h1>
+<h2 align="center">Kurulum</h2>
 
 > Sunucuzda npm ve node.js kurulu ise bu kısmı geçebilirsiniz.
 
