@@ -7,7 +7,7 @@ Bu yöntem ile tx botlarının oluşturduğu gereksiz temp dosyalarını silerek
 
 > 80gb dolmuş sunucuda denediğimde 64gb gereksiz dosya silindi. 
 
-<h2 align="center">Kurulum</h2>
+<h1 align="center">Kurulum</h1>
 
 > Sunucuzda npm ve node.js kurulu ise bu kısmı geçebilirsiniz.
 
