@@ -210,7 +210,7 @@ After=network-online.target
 [Service]
 User=root
 WorkingDirectory=/root/tracks/
-ExecStart=/root/go/bin/go run /root/tracks/cmd/main.go start
+ExecStart=/usr/local/go/bin/go run /root/tracks/cmd/main.go start
 Restart=always
 RestartSec=3
 LimitNOFILE=65535
