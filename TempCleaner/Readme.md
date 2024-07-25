@@ -3,11 +3,31 @@
 
 > UYARI : Bunu kullanmak herkesin kendi mesuliyetindedir.
 
+
+<h1 align="center">Elle temizleme</h1> 
+ Kesin çalışır 2-3 günde bir yapsanız yeterli.
+
+> Depolama Kontrol
+```console
+df -h
+```
+> Temp Silme
+```console
+rm -rf /tmp/*
+```
+> Tekrar Depolama Kontrol
+```console
+df -h
+```
+> Bu kadar.
+
+<h1 align="center">Oto Temizleme</h1>
+
 Bu yöntem ile tx botlarının oluşturduğu gereksiz temp dosyalarını silerek depolamamızda yer açıyoruz. Kodu çalıştırdığınızda ve bunu takip eden her 12 saatte kullanılmayan temp dosyaları siliniyor.
 
 > 80gb dolmuş sunucuda denediğimde 64gb gereksiz dosya silindi. 
 
-<h1 align="center">Kurulum</h1>
+<h2 align="center">Kurulum</h2>
 
 > Sunucuzda npm ve node.js kurulu ise bu kısmı geçebilirsiniz.
 
