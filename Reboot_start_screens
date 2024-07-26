@@ -1,0 +1,28 @@
+#!/bin/bash
+# Ekran oturumlarını yeniden başlat
+# Mevcut oturumları kontrol et ve eksik olanları oluştur
+
+screen -dmS rivalz
+screen -S rivalz -X stuff 'rivalz run\n'
+
+screen -dmS oasis
+screen -S oasis -X stuff 'cd oasis && node oasis_terminal.js\n'
+
+screen -dmS rollback
+screen -S rollback -X stuff 'cd rollback && ./check_log_and_fix.sh\n'
+
+screen -dmS send
+screen -S send -X stuff 'cd send && node index.js\n'
+
+screen -dmS bot
+screen -S bot -X stuff 'cd bot && node index.js\n'
+
+screen -dmS restart
+screen -S restart -X stuff 'cd tracks && ./stationd_auto_restart.sh\n'
+
+screen -dmS air
+screen -S air -X stuff 'cd evm-station && sudo journalctl -u stationd.service\n'
+
+# Yazılımı başlat
+cd ubuntu-node/
+sudo bash manager.sh up
