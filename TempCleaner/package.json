@@ -1,0 +1,16 @@
+{
+    "name": "temp-cleaner",
+    "version": "1.0.0",
+    "description": "A Node.js script to clean unused temp files",
+    "main": "tempCleaner.js",
+    "scripts": {
+      "start": "node tempCleaner.js"
+    },
+    "dependencies": {
+      "node-cron": "^3.0.0",
+      "fs-extra": "^10.0.0"
+    },
+    "author": "NuriBartu",
+    "license": "MIT"
+  }
+  
